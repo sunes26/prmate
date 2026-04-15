@@ -8,6 +8,6 @@ export const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export const MODEL = 'claude-sonnet-4-5-20251022';
+export const MODEL = 'claude-sonnet-4-6';
 export const MAX_TOKENS = 4096;
 export const TIMEOUT_MS = 30_000;
