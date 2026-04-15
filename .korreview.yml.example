@@ -1,0 +1,32 @@
+# KorReview 설정 파일 예시
+# 이 파일을 .korreview.yml로 복사하여 사용하세요.
+
+# 리뷰 언어 (ko: 한국어, en: 영어)
+language: ko
+
+# 코딩 컨벤션 프리셋
+# woowa   : 우아한형제들 Java/Kotlin 코딩 가이드
+# kakao   : 카카오 코딩 컨벤션
+# naver   : 네이버 Java 코딩 컨벤션
+# default : 클린 코드 범용 원칙
+convention: default
+
+# 리뷰 수준
+# strict   : 모든 이슈를 상세히 지적
+# standard : 표준 (권장)
+# relaxed  : 주요 이슈만
+review_level: standard
+
+# PIPA(개인정보보호법) 위반 패턴 감지 (Growth 플랜)
+pipa_check: false
+
+# 리뷰 제외 경로 (glob 패턴)
+exclude_paths:
+  - "*.md"
+  - "*.lock"
+  - "docs/**"
+  - "*.test.ts"
+  - "*.spec.ts"
+
+# PR당 최대 리뷰 파일 수 (1~50)
+max_files_per_pr: 20
