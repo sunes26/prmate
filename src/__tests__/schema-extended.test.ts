@@ -97,11 +97,21 @@ describe('PRmateConfig 확장 스키마 (Week 2)', () => {
     expect(config.convention_file).toBe('.prmate/our-style.md');
   });
 
-  test('새 컨벤션 (SK, LG, NHN, 쿠팡, LINE, 토스) 허용', () => {
-    for (const c of ['sk', 'lg', 'nhn', 'coupang', 'line', 'toss']) {
+  test('공식 공개 자료 기반 컨벤션만 허용 (woowa, naver, toss)', () => {
+    for (const c of ['woowa', 'naver', 'toss']) {
       const config = validateConfig({ convention: c });
       expect(config.convention).toBe(c);
     }
+  });
+
+  test('v1.0.0 추정 컨벤션은 default로 폴백 (kakao, sk, lg, nhn, coupang, line)', () => {
+    // 경고 출력은 console.warn으로 가지만 config.convention은 default로 폴백
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    for (const deprecated of ['kakao', 'sk', 'lg', 'nhn', 'coupang', 'line']) {
+      const config = validateConfig({ convention: deprecated });
+      expect(config.convention).toBe('default');
+    }
+    warnSpy.mockRestore();
   });
 
   test('기본값: enabled=true, model=sonnet, mode=full', () => {

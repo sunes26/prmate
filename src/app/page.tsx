@@ -3,12 +3,12 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'PRmate — 한국어 AI 코드 리뷰',
   description:
-    'GitHub PR이 열리면 자동으로 한국어로 코드 리뷰 코멘트를 게시합니다. 우아한형제들, 카카오, 네이버, SK, LG, NHN, 쿠팡, LINE, 토스 등 국내 대기업 컨벤션 프리셋 11종 내장.',
+    'GitHub PR이 열리면 자동으로 한국어로 코드 리뷰 코멘트를 게시합니다. 우아한테크코스, 네이버 Hackday, 토스 Frontend Fundamentals 등 공식 공개 자료 기반 컨벤션 프리셋 내장.',
   keywords: [
     '한국어 코드 리뷰', 'AI 코드 리뷰', 'GitHub Actions', 'CodeRabbit 한국어',
-    'PR 자동 리뷰', 'Claude 코드 리뷰', '카카오 컨벤션', '우아한형제들 컨벤션',
-    '네이버 코딩 스타일', 'SK 코딩 컨벤션', 'LG 코딩 가이드',
-    'NHN 컨벤션', '쿠팡 코딩 가이드', 'LINE 엔지니어링', '토스 프론트엔드',
+    'PR 자동 리뷰', 'Claude 코드 리뷰',
+    '우아한테크코스 스타일 가이드', '네이버 Hackday Java', '토스 Frontend Fundamentals',
+    'Google Java Style', 'Checkstyle',
   ],
   authors: [{ name: 'PRmate Team', url: 'https://prmate.dev' }],
   metadataBase: new URL('https://prmate.dev'),
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'PRmate — 한국어 AI 코드 리뷰',
-    description: '우아한·카카오·네이버·SK·LG·NHN·쿠팡·LINE·토스 컨벤션 프리셋 11종 내장. 5분 설치, 베타 기간 무료.',
+    description: '우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals 공식 컨벤션 내장. 5분 설치, 베타 기간 무료.',
     type: 'website',
     url: 'https://prmate.dev',
     siteName: 'PRmate',
@@ -84,17 +84,46 @@ const PAIN_POINTS = [
 ];
 
 const CONVENTIONS = [
-  { value: 'default', label: '기본', desc: '클린 코드 범용 원칙', lang: '모든 언어', badge: '무료' },
-  { value: 'woowa', label: '우아한형제들', desc: 'Lombok 지양 · Optional · Given-When-Then', lang: 'Java/Kotlin', badge: '무료' },
-  { value: 'kakao', label: '카카오', desc: 'K&R · 120자 · null 금지 · data class', lang: 'Java/Kotlin', badge: '무료' },
-  { value: 'naver', label: '네이버', desc: '@Override 필수 · 중첩 4단계 · switch default', lang: 'Java', badge: '무료' },
-  { value: 'sk', label: 'SK', desc: 'SLF4J · java.time · 테스트 70%+', lang: 'Java', badge: '프로' },
-  { value: 'lg', label: 'LG CNS', desc: 'final 활용 · private 우선 · 명사/동사 네이밍', lang: 'Java', badge: '프로' },
-  { value: 'nhn', label: 'NHN', desc: 'SonarQube zero · 중괄호 필수 · key=value 로그', lang: 'Java', badge: '프로' },
-  { value: 'coupang', label: '쿠팡', desc: 'N+1 주의 · Resilience4j · 영어 명명 필수', lang: 'Java', badge: '프로' },
-  { value: 'line', label: 'LINE', desc: 'gRPC · i18n · UTC · feature flag', lang: '멀티언어', badge: '프로' },
-  { value: 'toss', label: '토스', desc: 'strict mode · a11y · Named export · Props 접미사', lang: 'TypeScript/React', badge: '프로' },
-  { value: 'custom', label: '팀 커스텀', desc: '.md 파일로 자체 규칙 주입', lang: '-', badge: '프로' },
+  {
+    value: 'default',
+    label: '기본',
+    desc: '클린 코드 범용 원칙 (Robert C. Martin)',
+    lang: '모든 언어',
+    source: null,
+    badge: '무료',
+  },
+  {
+    value: 'woowa',
+    label: '우아한테크코스',
+    desc: 'Google Java Style + 들여쓰기 4, 한 줄 120자 등 4개 차이점',
+    lang: 'Java',
+    source: 'github.com/woowacourse/woowacourse-docs',
+    badge: '무료',
+  },
+  {
+    value: 'naver',
+    label: '네이버 Hackday',
+    desc: 'Checkstyle XML 포함 공식 문서 · K&R · UTF-8 · LF · import 순서 명시',
+    lang: 'Java',
+    source: 'naver.github.io/hackday-conventions-java',
+    badge: '무료',
+  },
+  {
+    value: 'toss',
+    label: '토스 Frontend Fundamentals',
+    desc: '가독성·예측가능성·응집도·결합도 4대 원칙 (변경하기 쉬운 코드)',
+    lang: 'TypeScript/JavaScript',
+    source: 'frontend-fundamentals.com',
+    badge: '무료',
+  },
+  {
+    value: 'custom',
+    label: '팀 커스텀',
+    desc: '.md 파일로 자체 규칙 주입 — 팀 내부 컨벤션 완벽 지원',
+    lang: '-',
+    source: null,
+    badge: '무료',
+  },
 ];
 
 const FEATURES = [
@@ -105,8 +134,8 @@ const FEATURES = [
   },
   {
     icon: '🏢',
-    title: '국내 컨벤션 11종',
-    desc: '우아한·카카오·네이버·SK·LG·NHN·쿠팡·LINE·토스 + 커스텀 파일.',
+    title: '공식 공개 컨벤션 5종',
+    desc: '우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals + 커스텀 파일 (추정 규칙 없음).',
   },
   {
     icon: '🔒',
@@ -193,7 +222,7 @@ jobs:
     desc: '.prmate.yml로 팀 컨벤션 커스터마이즈 (없으면 기본값 사용).',
     code: `enabled: true
 language: ko
-convention: kakao       # 11개 프리셋 중 선택
+convention: naver       # default | woowa | naver | toss | custom
 review_level: standard  # strict | standard | relaxed
 model: sonnet           # sonnet | haiku | opus
 mode: full              # full | summary | security | pipa`,
@@ -213,7 +242,7 @@ const PLANS = [
     period: '/월',
     target: '개인 개발자',
     prLimit: '월 30개',
-    features: ['기본 3개 컨벤션 (default, kakao, naver)', '한국어 리뷰', '비밀 마스킹', 'Kill switch'],
+    features: ['공식 컨벤션 5종 전체', '한국어 리뷰', '비밀 마스킹', 'Kill switch'],
     highlight: false,
   },
   {
@@ -222,7 +251,7 @@ const PLANS = [
     period: '/월',
     target: '소규모팀 (5인↓)',
     prLimit: '월 100개',
-    features: ['전체 컨벤션 11종', 'Custom 프롬프트', '파일 타입별 규칙', '모델 선택', 'Dry-run'],
+    features: ['Custom 프롬프트', '파일 타입별 규칙', '모델 선택 (sonnet/haiku/opus)', 'Dry-run', '혼용 언어'],
     highlight: false,
   },
   {
@@ -285,7 +314,11 @@ const FAQ = [
   },
   {
     q: 'CodeRabbit과 무엇이 다른가요?',
-    a: 'CodeRabbit은 language: ko 설정이 있지만 실제로는 영어 리뷰가 많이 나온다는 불만이 있습니다. PRmate는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한·카카오·네이버·SK·LG·NHN·쿠팡·LINE·토스 등 국내 대기업 컨벤션 11종을 내장합니다.',
+    a: 'CodeRabbit은 language: ko 설정이 있지만 실제로는 영어 리뷰가 많이 나온다는 불만이 있습니다. PRmate는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals 등 공식 공개 자료 기반 컨벤션을 내장합니다.',
+  },
+  {
+    q: '왜 카카오·SK·LG·쿠팡·LINE 컨벤션은 없나요?',
+    a: '해당 기업들은 공식으로 공개된 코딩 컨벤션 문서가 없습니다. 외부에 공개되지 않은 사내 규칙을 추정해서 제공하는 것은 정직하지 않다고 판단하여 v1.1.0에서 제거했습니다. 팀 내부 규칙이 있다면 convention: custom + convention_file 옵션으로 팀의 .md 파일을 직접 주입하세요.',
   },
   {
     q: '리뷰 비용은 얼마인가요?',
@@ -339,8 +372,8 @@ export default function HomePage() {
           GitHub PR이 열리면 자동으로 <strong className="text-gray-200">한국어</strong>로 코드 리뷰
           코멘트를 게시합니다.
           <br />
-          <strong className="text-gray-200">우아한·카카오·네이버·SK·LG·NHN·쿠팡·LINE·토스</strong>{' '}
-          등 국내 대기업 컨벤션 11종 내장.
+          <strong className="text-gray-200">우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals</strong>{' '}
+          등 <span className="underline decoration-blue-500/50">공식 공개</span> 컨벤션 기반.
         </p>
         <div className="flex gap-4 justify-center flex-wrap mb-8">
           <a
@@ -418,25 +451,29 @@ export default function HomePage() {
       {/* Conventions */}
       <section className="max-w-5xl mx-auto px-6 py-16" id="conventions">
         <h2 className="text-3xl font-bold text-center mb-3">
-          한국 IT 기업 컨벤션 11종
+          공식 공개 자료 기반 컨벤션 5종
         </h2>
-        <p className="text-gray-400 text-center mb-10">
+        <p className="text-gray-400 text-center mb-3">
           YAML에서 <code className="text-blue-400 bg-gray-900 px-2 py-0.5 rounded text-sm">convention: 값</code>
           으로 선택
+        </p>
+        <p className="text-gray-500 text-sm text-center mb-10 max-w-2xl mx-auto">
+          ⚠️ 내부 문서로만 존재하는 기업(카카오·SK·LG·쿠팡·LINE 등) 컨벤션은
+          &quot;추정 규칙&quot;이 되기 쉬워 제공하지 않습니다. 팀 자체 규칙은 <code className="text-blue-400">custom</code> 옵션으로 `.md` 파일을 직접 주입하세요.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-gray-400 border-b border-gray-800">
               <tr>
                 <th className="text-left px-4 py-3">값</th>
-                <th className="text-left px-4 py-3">기업</th>
-                <th className="text-left px-4 py-3">주요 규칙</th>
+                <th className="text-left px-4 py-3">이름</th>
+                <th className="text-left px-4 py-3">주요 원칙</th>
                 <th className="text-left px-4 py-3">언어</th>
-                <th className="text-left px-4 py-3">플랜</th>
+                <th className="text-left px-4 py-3">공식 출처</th>
               </tr>
             </thead>
             <tbody>
-              {CONVENTIONS.map(({ value, label, desc, lang, badge }) => (
+              {CONVENTIONS.map(({ value, label, desc, lang, source }) => (
                 <tr
                   key={value}
                   className="border-b border-gray-900 hover:bg-gray-900/50"
@@ -449,16 +486,19 @@ export default function HomePage() {
                   <td className="px-4 py-3 font-semibold">{label}</td>
                   <td className="px-4 py-3 text-gray-400">{desc}</td>
                   <td className="px-4 py-3 text-gray-500">{lang}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        badge === '무료'
-                          ? 'bg-green-900/40 text-green-300 border border-green-800/50'
-                          : 'bg-blue-900/40 text-blue-300 border border-blue-800/50'
-                      }`}
-                    >
-                      {badge}
-                    </span>
+                  <td className="px-4 py-3 text-xs">
+                    {source ? (
+                      <a
+                        href={`https://${source}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline"
+                      >
+                        {source} ↗
+                      </a>
+                    ) : (
+                      <span className="text-gray-600">—</span>
+                    )}
                   </td>
                 </tr>
               ))}

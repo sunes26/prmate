@@ -5,13 +5,13 @@ describe('parseConfig', () => {
   test('유효한 YAML을 파싱한다', () => {
     const yaml = `
 language: ko
-convention: kakao
+convention: naver
 review_level: strict
 pipa_check: true
 `;
     const config = parseConfig(yaml);
     expect(config.language).toBe('ko');
-    expect(config.convention).toBe('kakao');
+    expect(config.convention).toBe('naver');
     expect(config.review_level).toBe('strict');
     expect(config.pipa_check).toBe(true);
   });

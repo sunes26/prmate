@@ -6,16 +6,27 @@ export type Language = 'ko' | 'en';
 
 export type Convention =
   | 'default'
-  | 'woowa'
-  | 'kakao'
-  | 'naver'
-  | 'sk'      // Week 3
-  | 'lg'      // Week 3
-  | 'nhn'     // Week 3
-  | 'coupang' // Week 3
-  | 'line'    // Week 3
-  | 'toss'    // Week 3
-  | 'custom';
+  | 'woowa'   // 우아한테크코스 — 공식 (Google Java Style 기반)
+  | 'naver'   // 네이버 Hackday — 공식 (Checkstyle XML 포함)
+  | 'toss'    // 토스 Frontend Fundamentals — 공식
+  | 'custom'; // 팀 자체 파일
+
+/**
+ * v1.0.0에서 제공했던 컨벤션 값들 (추정 기반, 공식 자료 없음).
+ * v1.1.0에서 제거됨. `default` 또는 `custom`으로 대체 권장.
+ *
+ * 마이그레이션 시 "추정 → 실제 공식" 매핑을 의도적으로 하지 않고
+ * default로 폴백 + 경고 출력 (사용자에게 정확한 선택을 요구).
+ */
+const DEPRECATED_CONVENTIONS = [
+  'kakao',
+  'sk',
+  'lg',
+  'nhn',
+  'coupang',
+  'line',
+] as const;
+type DeprecatedConvention = (typeof DEPRECATED_CONVENTIONS)[number];
 
 export type ReviewLevel = 'strict' | 'standard' | 'relaxed';
 export type ModelTier = 'sonnet' | 'haiku' | 'opus';
@@ -131,9 +142,7 @@ export const DEFAULT_CONFIG: PRmateConfig = {
 
 const VALID_LANGUAGES: Language[] = ['ko', 'en'];
 const VALID_CONVENTIONS: Convention[] = [
-  'default', 'woowa', 'kakao', 'naver',
-  'sk', 'lg', 'nhn', 'coupang', 'line', 'toss',
-  'custom',
+  'default', 'woowa', 'naver', 'toss', 'custom',
 ];
 const VALID_REVIEW_LEVELS: ReviewLevel[] = ['strict', 'standard', 'relaxed'];
 const VALID_MODELS: ModelTier[] = ['sonnet', 'haiku', 'opus'];
@@ -186,6 +195,19 @@ export function validateConfig(raw: Record<string, unknown>): PRmateConfig {
   if (raw.convention !== undefined) {
     if (typeof raw.convention === 'string' && VALID_CONVENTIONS.includes(raw.convention as Convention)) {
       config.convention = raw.convention as Convention;
+    } else if (
+      typeof raw.convention === 'string' &&
+      DEPRECATED_CONVENTIONS.includes(raw.convention as DeprecatedConvention)
+    ) {
+      // v1.0.0에서 제공했던 "추정 컨벤션" — 공식 자료 없어 v1.1.0에서 제거됨
+      warnings.push(
+        `  ⚠ 'convention: ${raw.convention}' 는 v1.1.0에서 제거되었습니다.\n` +
+          `     (공식 공개 자료가 없어 v1.0.0의 규칙은 추정이었습니다)\n` +
+          `     → 현재 'default'로 자동 폴백. 대체 선택지:\n` +
+          `       - 'default' (클린 코드 범용)\n` +
+          `       - 'custom' + convention_file 로 팀 자체 .md 파일 주입\n` +
+          `       - 'woowa' / 'naver' / 'toss' (공식 공개 자료 있음)`
+      );
     } else {
       warnings.push(`  ⚠ 'convention' 값 무효: ${JSON.stringify(raw.convention)} → ${config.convention} 사용`);
     }
