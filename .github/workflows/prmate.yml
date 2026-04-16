@@ -1,0 +1,49 @@
+name: PRmate — 한국어 AI 코드 리뷰
+
+on:
+  pull_request:
+    # ready_for_review: Draft → Ready 전환 시 트리거
+    # edited: PR 제목에 [re-review] 추가 시 재트리거 (Week 4-8)
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  review:
+    name: AI 코드 리뷰 (한국어)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # 스킵 조건:
+    # - Draft PR (아직 리뷰 준비 안 됨)
+    # - PR 제목에 [skip review] 포함 (수동 opt-out)
+    # - 소스 브랜치가 test/** (실험 브랜치)
+    # - edited 이벤트는 [re-review] 있을 때만 (Week 4-8)
+    if: >-
+      github.event.pull_request.draft == false &&
+      !contains(github.event.pull_request.title, '[skip review]') &&
+      !startsWith(github.head_ref, 'test/') &&
+      (github.event.action != 'edited' || contains(github.event.pull_request.title, '[re-review]'))
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 20 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: PRmate 실행
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: npx tsx scripts/review.mts

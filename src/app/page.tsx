@@ -1,14 +1,75 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'KorReview — 한국어 AI 코드 리뷰',
+  title: 'PRmate — 한국어 AI 코드 리뷰',
   description:
-    'GitHub PR이 열리면 자동으로 한국어로 코드 리뷰 코멘트를 게시합니다. 우아한형제들, 카카오, 네이버 컨벤션 프리셋 제공.',
-  openGraph: {
-    title: 'KorReview — 한국어 AI 코드 리뷰',
-    description: 'GitHub Marketplace에 없던 한국어 전용 AI 코드 리뷰 도구',
-    type: 'website',
+    'GitHub PR이 열리면 자동으로 한국어로 코드 리뷰 코멘트를 게시합니다. 우아한형제들, 카카오, 네이버 등 국내 대기업 컨벤션 프리셋 11종 내장.',
+  keywords: [
+    '한국어 코드 리뷰', 'AI 코드 리뷰', 'GitHub Actions', 'CodeRabbit 한국어',
+    'PR 자동 리뷰', 'Claude 코드 리뷰', '카카오 컨벤션', '우아한형제들 컨벤션',
+    '네이버 코딩 스타일', 'SK 코딩 컨벤션', 'LG 코딩 가이드',
+  ],
+  authors: [{ name: 'PRmate Team', url: 'https://prmate.dev' }],
+  metadataBase: new URL('https://prmate.dev'),
+  alternates: {
+    canonical: '/',
   },
+  openGraph: {
+    title: 'PRmate — 한국어 AI 코드 리뷰',
+    description: '우아한형제들·카카오·네이버 컨벤션 프리셋 11종 내장. 5분 설치, 베타 기간 무료.',
+    type: 'website',
+    url: 'https://prmate.dev',
+    siteName: 'PRmate',
+    locale: 'ko_KR',
+    images: [
+      {
+        url: '/og-image',
+        width: 1200,
+        height: 630,
+        alt: 'PRmate — 한국어 AI 코드 리뷰',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PRmate — 한국어 AI 코드 리뷰',
+    description: '우아한형제들·카카오·네이버 컨벤션 프리셋 11종 내장.',
+    images: ['/og-image'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
+
+// JSON-LD Schema.org 구조화 데이터
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'PRmate',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Linux, macOS, Windows (via GitHub Actions)',
+  description: 'GitHub PR을 한국어로 자동 리뷰하는 AI 도구. 국내 대기업 컨벤션 11종 내장.',
+  url: 'https://prmate.dev',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'KRW',
+    description: '베타 기간 무료',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5',
+    reviewCount: '1',
+  },
+  softwareVersion: '1.0.0',
 };
 
 const PAIN_POINTS = [
@@ -29,20 +90,43 @@ const PAIN_POINTS = [
 const STEPS = [
   {
     step: '1',
-    title: 'GitHub에서 설치',
-    desc: 'GitHub Actions YAML 파일 하나를 레포에 추가합니다.',
-    code: `# .github/workflows/korreview.yml\nuses: korreview/action@v1\nwith:\n  anthropic_key: \${{ secrets.ANTHROPIC_API_KEY }}`,
+    title: 'API 키 등록',
+    desc: 'console.anthropic.com에서 키 발급 후, 레포 Settings → Secrets에 ANTHROPIC_API_KEY 등록.',
+    code: null,
   },
   {
     step: '2',
-    title: '컨벤션 선택',
-    desc: '.korreview.yml로 팀 컨벤션을 설정합니다.',
-    code: `language: ko\nconvention: kakao  # woowa | kakao | naver\nreview_level: standard`,
+    title: '워크플로우 파일 추가',
+    desc: '.github/workflows/review.yml 파일을 추가합니다.',
+    code: `name: PR 코드 리뷰
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions:
+  pull-requests: write
+  contents: read
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sunes26/prmate@v1
+        with:
+          anthropic_api_key: \${{ secrets.ANTHROPIC_API_KEY }}`,
   },
   {
     step: '3',
-    title: 'PR 오픈 → 자동 리뷰',
-    desc: '개발자가 PR을 열면 2~3분 내 한국어 리뷰가 자동 게시됩니다.',
+    title: '(선택) 컨벤션 설정',
+    desc: '.prmate.yml로 팀 컨벤션 커스터마이즈 (없으면 기본값 사용).',
+    code: `language: ko
+convention: kakao       # woowa | kakao | naver | sk | lg | nhn | coupang | line | toss | custom
+review_level: standard  # strict | standard | relaxed
+model: sonnet           # sonnet | haiku`,
+  },
+  {
+    step: '4',
+    title: 'PR 오픈 → 자동 리뷰 🎉',
+    desc: 'PR 열면 2~3분 내 한국어 리뷰 코멘트가 자동 게시됩니다.',
     code: null,
   },
 ];
@@ -56,7 +140,7 @@ const PLANS = [
 
 const FAQ = [
   { q: '코드가 서버에 저장되나요?', a: '아니요. Zero Data Retention 정책을 적용하여 코드는 메모리에서 처리 후 즉시 삭제됩니다. PR diff만 추출하여 분석하며, 전체 레포지토리에 접근하지 않습니다.' },
-  { q: 'CodeRabbit과 무엇이 다른가요?', a: 'CodeRabbit은 한국어 설정을 지원한다고 명시하지만, 실제로는 영어 리뷰가 나오는 경우가 많습니다. KorReview는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한형제들/카카오/네이버 컨벤션 프리셋을 기본 제공합니다.' },
+  { q: 'CodeRabbit과 무엇이 다른가요?', a: 'CodeRabbit은 한국어 설정을 지원한다고 명시하지만, 실제로는 영어 리뷰가 나오는 경우가 많습니다. PRmate는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한형제들/카카오/네이버 컨벤션 프리셋을 기본 제공합니다.' },
   { q: '어떤 언어를 지원하나요?', a: 'JavaScript, TypeScript, Python, Java, Go, Kotlin, Rust, Ruby 등 주요 언어를 지원합니다. 한국어/영어 혼용 코드베이스도 지원합니다.' },
   { q: '설치하는 데 얼마나 걸리나요?', a: 'GitHub Actions YAML 파일 하나를 복사+붙여넣기하면 됩니다. 5분 이내에 첫 리뷰를 받을 수 있습니다.' },
   { q: '베타 기간 중 무료인가요?', a: '네, 현재 베타 기간 중에는 무료로 이용할 수 있습니다. 베타 피드백을 주시면 유료 전환 시 혜택을 드립니다.' },
@@ -65,6 +149,11 @@ const FAQ = [
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-gray-950 text-gray-100 font-sans">
+      {/* Schema.org JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center">
         <div className="inline-block bg-blue-900/40 text-blue-300 text-sm px-3 py-1 rounded-full mb-6 border border-blue-700/50">
@@ -78,10 +167,10 @@ export default function HomePage() {
           코멘트를 게시합니다. 우아한형제들·카카오·네이버 컨벤션 프리셋 내장.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <a href="https://github.com/korreview/korreview#installation" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+          <a href="https://github.com/sunes26/prmate#5분-설치" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
             무료로 시작하기
           </a>
-          <a href="https://github.com/korreview/korreview" className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-8 py-3 rounded-lg font-semibold transition-colors border border-gray-700">
+          <a href="https://github.com/sunes26/prmate" className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-8 py-3 rounded-lg font-semibold transition-colors border border-gray-700">
             GitHub 보기 →
           </a>
         </div>
@@ -103,7 +192,7 @@ export default function HomePage() {
 
       {/* How it works */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-center mb-10">3단계로 시작</h2>
+        <h2 className="text-2xl font-bold text-center mb-10">4단계로 시작 (5분)</h2>
         <div className="grid gap-8">
           {STEPS.map(({ step, title, desc, code }) => (
             <div key={step} className="flex gap-6 items-start">
@@ -140,7 +229,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <a href="https://github.com/korreview/korreview#installation" className={`block text-center py-2 rounded-lg text-sm font-semibold transition-colors ${plan.highlight ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-200'}`}>
+              <a href="https://github.com/sunes26/prmate#5분-설치" className={`block text-center py-2 rounded-lg text-sm font-semibold transition-colors ${plan.highlight ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-200'}`}>
                 시작하기
               </a>
             </div>
@@ -161,15 +250,35 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Footer */}
+      {/* CTA */}
       <section className="text-center py-20 px-6 border-t border-gray-800">
         <h2 className="text-3xl font-bold mb-4">지금 바로 시작하세요</h2>
         <p className="text-gray-400 mb-8">베타 기간 중 무료. 설치 5분.</p>
-        <a href="https://github.com/korreview/korreview#installation" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-lg font-semibold text-lg transition-colors">
-          무료로 시작하기
-        </a>
+        <div className="flex gap-4 justify-center flex-wrap">
+          <a href="https://github.com/sunes26/prmate#5분-설치" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-lg font-semibold text-lg transition-colors">
+            무료로 시작하기
+          </a>
+          <a href="https://github.com/marketplace/actions/prmate" className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-10 py-4 rounded-lg font-semibold text-lg border border-gray-700 transition-colors">
+            Marketplace →
+          </a>
+        </div>
         <p className="text-gray-600 text-sm mt-6">한국 개발자를 위해, 한국 개발자가 만든 코드 리뷰 도구</p>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-900 bg-gray-950 py-8 px-6">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
+          <div className="text-gray-500">
+            © 2026 PRmate. MIT License.
+          </div>
+          <div className="flex gap-6 text-gray-400">
+            <a href="https://github.com/sunes26/prmate" className="hover:text-gray-200">GitHub</a>
+            <a href="https://github.com/sunes26/prmate/issues" className="hover:text-gray-200">Issues</a>
+            <a href="https://github.com/sunes26/prmate/discussions" className="hover:text-gray-200">Discussions</a>
+            <a href="https://github.com/sunes26/prmate/blob/master/LICENSE" className="hover:text-gray-200">라이선스</a>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

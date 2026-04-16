@@ -1,0 +1,67 @@
+name: 'PRmate — 한국어 AI 코드 리뷰'
+description: 'GitHub PR을 자동으로 한국어로 리뷰합니다. 우아한형제들/카카오/네이버 등 국내 컨벤션 프리셋 내장.'
+author: 'PRmate Team'
+
+branding:
+  icon: 'message-square'
+  color: 'blue'
+
+inputs:
+  anthropic_api_key:
+    description: 'Anthropic API 키 (console.anthropic.com에서 발급)'
+    required: true
+  github_token:
+    description: 'GitHub 토큰 (기본값: github.token)'
+    required: false
+    default: ${{ github.token }}
+  config_path:
+    description: '.prmate.yml 설정 파일 경로'
+    required: false
+    default: '.prmate.yml'
+  claude_model:
+    description: '사용할 Claude 모델 (기본: claude-sonnet-4-6)'
+    required: false
+    default: 'claude-sonnet-4-6'
+  timeout_ms:
+    description: 'Claude API 타임아웃 (밀리초)'
+    required: false
+    default: '90000'
+
+outputs:
+  review_url:
+    description: '게시된 리뷰 코멘트의 URL'
+    value: ${{ steps.review.outputs.review_url }}
+  tokens_used:
+    description: '사용된 토큰 수 (입력+출력)'
+    value: ${{ steps.review.outputs.tokens_used }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Node.js 20 설정
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: PRmate 실행
+      id: review
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic_api_key }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        CLAUDE_MODEL: ${{ inputs.claude_model }}
+        PRMATE_TIMEOUT_MS: ${{ inputs.timeout_ms }}
+        PRMATE_CONFIG_PATH: ${{ github.workspace }}/${{ inputs.config_path }}
+        GITHUB_WORKSPACE: ${{ github.workspace }}
+      run: |
+        if [ -f "dist/review.js" ]; then
+          echo "▶ 번들 버전 실행 (빠름)"
+          node dist/review.js
+        else
+          echo "▶ 소스 직접 실행 (느림)"
+          npm ci --production=false --no-audit --no-fund
+          npx tsx scripts/review.mts
+        fi

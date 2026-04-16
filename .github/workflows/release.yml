@@ -1,0 +1,116 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 릴리스 빌드 & 배포
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Node.js 20 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 테스트 실행
+        run: npm test
+
+      - name: Action 번들 빌드
+        run: npm run build:action
+
+      - name: 번들 커밋 확인
+        id: bundle_check
+        run: |
+          if [ ! -f "dist/review.js" ]; then
+            echo "❌ dist/review.js 생성 실패"
+            exit 1
+          fi
+          SIZE=$(wc -c < dist/review.js)
+          echo "✅ 번들 크기: $SIZE bytes"
+          echo "bundle_size=$SIZE" >> $GITHUB_OUTPUT
+
+      - name: 릴리스 노트 생성
+        id: release_notes
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+
+          {
+            echo "notes<<EOF"
+            echo "## PRmate $TAG_NAME"
+            echo ""
+            echo "### 변경 사항"
+            if [ -n "$PREV_TAG" ]; then
+              git log --pretty=format:'- %s (%h)' "$PREV_TAG"..HEAD
+            else
+              git log --pretty=format:'- %s (%h)' --max-count=20
+            fi
+            echo ""
+            echo ""
+            echo "### 설치 방법"
+            echo '```yaml'
+            echo "# .github/workflows/review.yml"
+            echo "name: PR 코드 리뷰"
+            echo "on: [pull_request]"
+            echo "jobs:"
+            echo "  review:"
+            echo "    runs-on: ubuntu-latest"
+            echo "    steps:"
+            echo "      - uses: sunes26/prmate@$TAG_NAME"
+            echo "        with:"
+            echo "          anthropic_api_key: \${{ secrets.ANTHROPIC_API_KEY }}"
+            echo '```'
+            echo ""
+            echo "**번들 크기:** ${{ steps.bundle_check.outputs.bundle_size }} bytes"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: GitHub 릴리스 생성
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_notes.outputs.tag }}
+          name: ${{ steps.release_notes.outputs.tag }}
+          body: ${{ steps.release_notes.outputs.notes }}
+          draft: false
+          prerelease: false
+          files: |
+            action.yml
+            dist/review.js
+
+  update_major_tag:
+    name: Major 태그 업데이트 (v1 → v1.x.y 최신)
+    runs-on: ubuntu-latest
+    needs: release
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Major 버전 태그 이동
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          MAJOR=$(echo "$TAG_NAME" | sed -E 's/^v([0-9]+).*/v\1/')
+          echo "▶ $TAG_NAME → $MAJOR 재지정"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f "$MAJOR" "$TAG_NAME"
+          git push origin "$MAJOR" --force
