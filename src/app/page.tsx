@@ -91,7 +91,7 @@ const COMPARISON = [
   { feature: '한국 IT사 공식 컨벤션', prmate: '우아한/네이버/토스 3종', competitor: '없음', winner: 'prmate' },
   { feature: '비용 투명성', prmate: 'PR마다 USD/KRW 표시', competitor: '구독제', winner: 'prmate' },
   { feature: '오픈소스', prmate: 'MIT 라이선스', competitor: 'Closed source', winner: 'prmate' },
-  { feature: '가격', prmate: '베타 무료 / Starter ₩9,900', competitor: '$15/월 ~', winner: 'prmate' },
+  { feature: '가격', prmate: '베타 유료기능 무료 / Starter ₩9,900', competitor: '$15/월 ~', winner: 'prmate' },
   { feature: '커스텀 컨벤션 파일', prmate: '.md 주입 기본 지원', competitor: '제한적', winner: 'prmate' },
   { feature: '설치 난이도', prmate: 'YAML 한 줄 (5분)', competitor: '원클릭 (GitHub App)', winner: 'competitor' },
   { feature: '원클릭 설치', prmate: '미지원 (Phase 4 예정)', competitor: '지원', winner: 'competitor' },
@@ -294,7 +294,8 @@ const FAQ = [
   { q: '리뷰가 너무 시끄러우면 어떻게 하나요?', a: 'review_level: relaxed 또는 mode: summary로 변경하면 핵심만 지적합니다. 파일 타입별로 다른 규칙 적용도 가능 (rules 옵션). 특정 PR만 스킵하려면 제목에 [skip review] 포함.' },
   { q: 'AI가 잘못된 지적을 하면요?', a: 'Dry-run 모드로 실제 게시 전 결과 확인 가능. 팀 스타일 가이드 (.prmate/style-guide.md)를 작성하면 팀 컨텍스트를 학습하여 정확도 향상. 프리미엄 학습 모드는 Team 플랜부터.' },
   { q: '설치가 복잡한가요?', a: 'YAML 파일 하나를 복사+붙여넣기, 5분 이내 완료. GitHub Action 방식이라 별도 서버 불필요.' },
-  { q: '베타 기간 중 무료인가요?', a: '네, 현재 베타 기간 중 모든 기능 무료. 베타 피드백 주시면 유료 전환 시 50% 할인 혜택.' },
+  { q: '베타 기간 중 무료인가요?', a: '네, 2026년 말까지 베타 기간 중 모든 유료기능 무료입니다. 베타 참여자에게는 정식 출시 후 50% 평생 할인 혜택을 제공할 예정입니다. 피드백은 GitHub Discussions에서 환영합니다.' },
+  { q: '월 PR 한도를 초과하면 어떻게 되나요?', a: '베타 기간 중에는 한도 관계없이 모든 기능을 자유롭게 이용하실 수 있습니다. 정식 출시 후에는 한도 초과분이 해당 월 동안 대기 상태가 되며, 다음 달 1일 자동 초기화됩니다. 초과가 잦은 경우 상위 플랜 업그레이드 또는 추가 크레딧 구매로 해결 가능합니다.' },
   { q: 'GitHub App으로도 쓸 수 있나요?', a: '현재는 GitHub Action 방식만 지원. GitHub App은 Phase 4(2026년 하반기)에 출시 예정. MRR ₩100k 달성 후 착수.' },
 ];
 
@@ -707,10 +708,48 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ══════════════════════ BYOK 안내 ══════════════════════ */}
+      <section className="max-w-4xl mx-auto px-6 pb-4 pt-8">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 md:p-8">
+          <div className="flex items-start gap-4">
+            <span className="text-3xl shrink-0">💡</span>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">PRmate 구독료 = 기능 이용권 (Claude 비용 별도)</h3>
+              <p className="text-gray-400 mb-4 leading-relaxed">
+                PRmate는 <strong className="text-gray-200">BYOK (Bring Your Own Key)</strong> 방식입니다.
+                Claude API 비용은 본인의 Anthropic API 키로 직접 결제됩니다 — PRmate 구독료와 완전히 별개입니다.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                <div className="bg-gray-950 rounded-lg p-4 border border-gray-800">
+                  <p className="text-gray-500 text-xs mb-1">① PRmate 구독료</p>
+                  <p className="font-semibold text-gray-200">플랜별 기능 접근 권한</p>
+                  <p className="text-gray-500 text-xs mt-1">Free · Starter · Team · Growth</p>
+                </div>
+                <div className="bg-gray-950 rounded-lg p-4 border border-gray-800">
+                  <p className="text-gray-500 text-xs mb-1">② Claude API 비용 (별도 · 본인 키)</p>
+                  <p className="font-semibold text-gray-200">PR 1건당 평균 $0.01~0.05</p>
+                  <p className="text-gray-500 text-xs mt-1">≈ ₩15~70 · Prompt Caching 50~90% 절감</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ══════════════════════ PRICING ══════════════════════ */}
       <section className="max-w-6xl mx-auto px-6 py-16" id="pricing">
         <h2 className="text-3xl font-bold text-center mb-3">가격 플랜</h2>
-        <p className="text-gray-400 text-center mb-10">베타 기간 중 모든 기능 무료</p>
+        <p className="text-gray-400 text-center mb-6">베타 기간 중 모든 유료기능 무료</p>
+
+        {/* 베타 배너 */}
+        <div className="max-w-3xl mx-auto bg-blue-900/30 border border-blue-700/50 rounded-xl p-5 mb-10 text-center">
+          <p className="text-blue-300 font-semibold mb-1">🚧 2026년 말까지 베타 — 모든 유료기능 무료</p>
+          <p className="text-gray-300 text-sm">
+            베타 참여 시 정식 출시 후{' '}
+            <strong className="text-yellow-300">50% 평생 할인</strong> 혜택 제공 예정
+          </p>
+        </div>
+
         <div className="grid md:grid-cols-4 gap-4">
           {PLANS.map((plan) => (
             <div
@@ -816,7 +855,7 @@ export default function HomePage() {
       {/* ══════════════════════ CTA ══════════════════════ */}
       <section className="text-center py-20 px-6 border-t border-gray-800">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">지금 바로 시작하세요</h2>
-        <p className="text-gray-400 mb-8">베타 기간 중 무료. 설치 5분. Claude API 키만 있으면 끝.</p>
+        <p className="text-gray-400 mb-8">2026년 말까지 베타 — 모든 유료기능 무료. 설치 5분. Claude API 키만 있으면 끝.</p>
         <div className="flex gap-4 justify-center flex-wrap">
           <a
             href="#installation"
