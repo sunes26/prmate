@@ -69,7 +69,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - uses: sunes26/prmate@v1
+      - uses: prmate/prmate@v1
         with:
           anthropic_api_key: \${{ secrets.ANTHROPIC_API_KEY }}`;
 
@@ -330,7 +330,7 @@ export default function HomePage() {
           </div>
           <div className="flex gap-2">
             <a
-              href="https://github.com/sunes26/prmate"
+              href="https://github.com/prmate/prmate"
               className="text-xs px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-md text-gray-200 border border-gray-700"
             >
               GitHub ★
@@ -368,7 +368,7 @@ export default function HomePage() {
             무료로 시작하기 (5분)
           </a>
           <a
-            href="https://github.com/sunes26/prmate"
+            href="https://github.com/prmate/prmate"
             className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-8 py-3 rounded-lg font-semibold transition-colors border border-gray-700"
           >
             GitHub ★ 누르기 →
@@ -805,7 +805,7 @@ export default function HomePage() {
         <p className="text-gray-400 text-center mb-10">모든 코드를 검증할 수 있어야 진짜 신뢰</p>
         <div className="grid md:grid-cols-4 gap-4">
           <a
-            href="https://github.com/sunes26/prmate"
+            href="https://github.com/prmate/prmate"
             className="bg-gray-900 border border-gray-800 rounded-lg p-5 text-center hover:border-blue-700/50 transition-colors"
           >
             <div className="text-2xl mb-2">📦</div>
@@ -813,7 +813,7 @@ export default function HomePage() {
             <div className="font-semibold">GitHub Public</div>
           </a>
           <a
-            href="https://github.com/sunes26/prmate/tree/master/src/__tests__"
+            href="https://github.com/prmate/prmate/tree/master/src/__tests__"
             className="bg-gray-900 border border-gray-800 rounded-lg p-5 text-center hover:border-blue-700/50 transition-colors"
           >
             <div className="text-2xl mb-2">✅</div>
@@ -821,7 +821,7 @@ export default function HomePage() {
             <div className="font-semibold">53개 passing</div>
           </a>
           <a
-            href="https://github.com/sunes26/prmate/releases"
+            href="https://github.com/prmate/prmate/releases"
             className="bg-gray-900 border border-gray-800 rounded-lg p-5 text-center hover:border-blue-700/50 transition-colors"
           >
             <div className="text-2xl mb-2">🏷️</div>
@@ -829,7 +829,7 @@ export default function HomePage() {
             <div className="font-semibold">v1.1.0</div>
           </a>
           <a
-            href="https://github.com/sunes26/prmate/blob/master/LICENSE"
+            href="https://github.com/prmate/prmate/blob/master/LICENSE"
             className="bg-gray-900 border border-gray-800 rounded-lg p-5 text-center hover:border-blue-700/50 transition-colors"
           >
             <div className="text-2xl mb-2">📜</div>
@@ -864,7 +864,7 @@ export default function HomePage() {
             무료로 시작하기
           </a>
           <a
-            href="https://github.com/sunes26/prmate"
+            href="https://github.com/prmate/prmate"
             className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-10 py-4 rounded-lg font-semibold text-lg border border-gray-700 transition-colors"
           >
             GitHub ★
@@ -878,22 +878,22 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
           <div className="text-gray-500">© 2026 PRmate. MIT License. Made with 🤖 in Seoul.</div>
           <div className="flex gap-6 text-gray-400 flex-wrap justify-center">
-            <a href="https://github.com/sunes26/prmate" className="hover:text-gray-200">
+            <a href="https://github.com/prmate/prmate" className="hover:text-gray-200">
               GitHub
             </a>
-            <a href="https://github.com/sunes26/prmate/releases" className="hover:text-gray-200">
+            <a href="https://github.com/prmate/prmate/releases" className="hover:text-gray-200">
               Releases
             </a>
-            <a href="https://github.com/sunes26/prmate/issues" className="hover:text-gray-200">
+            <a href="https://github.com/prmate/prmate/issues" className="hover:text-gray-200">
               Issues
             </a>
-            <a href="https://github.com/sunes26/prmate/discussions" className="hover:text-gray-200">
+            <a href="https://github.com/prmate/prmate/discussions" className="hover:text-gray-200">
               Discussions
             </a>
-            <a href="https://github.com/sunes26/prmate/blob/master/CHANGELOG.md" className="hover:text-gray-200">
+            <a href="https://github.com/prmate/prmate/blob/master/CHANGELOG.md" className="hover:text-gray-200">
               Changelog
             </a>
-            <a href="https://github.com/sunes26/prmate/blob/master/LICENSE" className="hover:text-gray-200">
+            <a href="https://github.com/prmate/prmate/blob/master/LICENSE" className="hover:text-gray-200">
               라이선스
             </a>
           </div>

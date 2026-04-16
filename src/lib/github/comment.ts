@@ -64,7 +64,7 @@ export async function postErrorComment(
 
 리뷰 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.
 
-문제가 지속되면 [이슈를 등록](https://github.com/sunes26/prmate/issues)해 주세요.`;
+문제가 지속되면 [이슈를 등록](https://github.com/prmate/prmate/issues)해 주세요.`;
 
   const body = `${PRMATE_HEADER}\n${customBody ?? fallback}`;
 

@@ -74,6 +74,6 @@ describe('formatErrorMessage', () => {
   test('이슈 링크 포함', () => {
     const info = classifyError(new Error('unknown error'));
     const formatted = formatErrorMessage(info);
-    expect(formatted).toContain('github.com/sunes26/prmate/issues');
+    expect(formatted).toContain('github.com/prmate/prmate/issues');
   });
 });

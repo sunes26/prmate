@@ -92,6 +92,6 @@ convention: kakao   # 또는 sk, lg, nhn, coupang, line
 - Claude API Prompt Caching 비용 최적화
 - Zero Data Retention
 
-[1.1.0]: https://github.com/sunes26/prmate/releases/tag/v1.1.0
-[1.0.0]: https://github.com/sunes26/prmate/releases/tag/v1.0.0
-[0.1.0]: https://github.com/sunes26/prmate/releases/tag/v0.1.0
+[1.1.0]: https://github.com/prmate/prmate/releases/tag/v1.1.0
+[1.0.0]: https://github.com/prmate/prmate/releases/tag/v1.0.0
+[0.1.0]: https://github.com/prmate/prmate/releases/tag/v0.1.0

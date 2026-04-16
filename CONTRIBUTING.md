@@ -5,14 +5,14 @@
 ## 기여 방법
 
 ### 🐛 버그 제보
-[Issues](https://github.com/sunes26/prmate/issues)에 다음 정보 포함:
+[Issues](https://github.com/prmate/prmate/issues)에 다음 정보 포함:
 - 재현 단계
 - 예상 동작 vs 실제 동작
 - GitHub Actions 로그 (민감 정보 제거 필수)
 - `.prmate.yml` 설정 (있다면)
 
 ### 💡 기능 제안
-[Discussions](https://github.com/sunes26/prmate/discussions)에서 먼저 논의
+[Discussions](https://github.com/prmate/prmate/discussions)에서 먼저 논의
 
 ### 🔧 코드 기여
 

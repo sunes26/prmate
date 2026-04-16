@@ -73,7 +73,7 @@ jobs:
             echo "  review:"
             echo "    runs-on: ubuntu-latest"
             echo "    steps:"
-            echo "      - uses: sunes26/prmate@$TAG_NAME"
+            echo "      - uses: prmate/prmate@$TAG_NAME"
             echo "        with:"
             echo "          anthropic_api_key: \${{ secrets.ANTHROPIC_API_KEY }}"
             echo '```'

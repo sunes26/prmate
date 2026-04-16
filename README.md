@@ -52,7 +52,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - uses: sunes26/prmate@v1
+      - uses: prmate/prmate@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -247,8 +247,8 @@ PR 1건당 평균 **$0.01 ~ $0.05** (≈ ₩15~70). Prompt Caching 활용 시 50
 - 🌐 **공식 사이트**: [prmate.dev](https://prmate.dev)
 - 📦 **Marketplace**: [github.com/marketplace/actions/prmate](https://github.com/marketplace/actions/prmate)
 - 💬 **Discord**: [discord.gg/prmate](https://discord.gg/prmate)
-- 🐛 **버그 리포트**: [Issues](https://github.com/sunes26/prmate/issues)
-- 💡 **기능 제안**: [Discussions](https://github.com/sunes26/prmate/discussions)
+- 🐛 **버그 리포트**: [Issues](https://github.com/prmate/prmate/issues)
+- 💡 **기능 제안**: [Discussions](https://github.com/prmate/prmate/discussions)
 - 📝 **블로그**: [prmate.dev/blog](https://prmate.dev/blog)
 
 ---
