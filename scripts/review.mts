@@ -1,5 +1,5 @@
 /**
- * KorReview GitHub Actions 메인 스크립트
+ * PRmate GitHub Actions 메인 스크립트
  * 실행: tsx scripts/review.mts
  */
 import { Octokit } from '@octokit/rest';
@@ -36,26 +36,26 @@ if (!owner || !repo || isNaN(pullNumber)) {
 
 // ─── 메인 함수 ────────────────────────────────────────────────
 async function main() {
-  console.log(`[KorReview] 시작: ${GITHUB_REPOSITORY}#${pullNumber}`);
+  console.log(`[PRmate] 시작: ${GITHUB_REPOSITORY}#${pullNumber}`);
 
   const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-  // .korreview.yml 로드 (없으면 기본값)
-  const configPath = resolve(process.cwd(), '.korreview.yml');
+  // .prmate.yml 로드 (없으면 기본값)
+  const configPath = resolve(process.cwd(), '.prmate.yml');
   const config = existsSync(configPath)
     ? (() => {
-        console.log('[KorReview] .korreview.yml 발견, 설정 로드 중...');
+        console.log('[PRmate] .prmate.yml 발견, 설정 로드 중...');
         return parseConfig(readFileSync(configPath, 'utf-8'));
       })()
     : DEFAULT_CONFIG;
 
-  console.log(`[KorReview] 컨벤션: ${config.convention}, 레벨: ${config.review_level}`);
+  console.log(`[PRmate] 컨벤션: ${config.convention}, 레벨: ${config.review_level}`);
 
   let commentId: number | undefined;
 
   try {
     // 1. PR diff 추출
-    console.log('[KorReview] PR diff 추출 중...');
+    console.log('[PRmate] PR diff 추출 중...');
     const context = await extractPRContext(octokit, owner, repo, pullNumber, config);
 
     // 변경 파일 없으면 스킵
@@ -64,31 +64,31 @@ async function main() {
         octokit, owner, repo, pullNumber,
         '리뷰할 변경 파일이 없습니다. (제외 패턴에 의해 모두 필터링됨)'
       );
-      console.log('[KorReview] 리뷰할 파일 없음 — 스킵');
+      console.log('[PRmate] 리뷰할 파일 없음 — 스킵');
       return;
     }
 
-    console.log(`[KorReview] ${context.files.length}개 파일 분석 예정`);
+    console.log(`[PRmate] ${context.files.length}개 파일 분석 예정`);
 
     // 2. "분석 중..." 코멘트 게시
     commentId = await postPendingComment(octokit, owner, repo, pullNumber);
 
     // 3. Claude API로 한국어 리뷰 생성
-    console.log('[KorReview] Claude API 호출 중...');
+    console.log('[PRmate] Claude API 호출 중...');
     const result = await generateKoreanReview(context, config);
 
     console.log(
-      `[KorReview] 리뷰 완료 — 입력: ${result.inputTokens}, 출력: ${result.outputTokens}, 캐시 적중: ${result.cacheReadTokens}`
+      `[PRmate] 리뷰 완료 — 입력: ${result.inputTokens}, 출력: ${result.outputTokens}, 캐시 적중: ${result.cacheReadTokens}`
     );
 
     // 4. 리뷰 코멘트 업데이트
     const reviewBody = formatReviewComment(result, config);
     await updateComment(octokit, owner, repo, commentId, reviewBody);
 
-    console.log('[KorReview] 완료 ✅');
+    console.log('[PRmate] 완료 ✅');
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error(`[KorReview] 오류 발생: ${message}`);
+    console.error(`[PRmate] 오류 발생: ${message}`);
 
     // 스택 트레이스는 로그에만 출력 (PR 코멘트에는 노출 금지)
     if (err instanceof Error && err.stack) {

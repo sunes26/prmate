@@ -1,7 +1,7 @@
 import * as yaml from 'js-yaml';
-import { DEFAULT_CONFIG, KorReviewConfig, validateConfig } from './schema';
+import { DEFAULT_CONFIG, PRmateConfig, validateConfig } from './schema';
 
-export function parseConfig(yamlContent: string): KorReviewConfig {
+export function parseConfig(yamlContent: string): PRmateConfig {
   try {
     const raw = yaml.load(yamlContent);
     if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {

@@ -1,9 +1,9 @@
 import { anthropic, MODEL, MAX_TOKENS, TIMEOUT_MS } from '../claude';
-import { KorReviewConfig } from '../config/schema';
+import { PRmateConfig } from '../config/schema';
 import { PRContext, formatDiffForReview } from '../github/diff';
 import { getConventionRuleset, formatConventionForPrompt } from './conventions';
 
-function buildSystemPrompt(config: KorReviewConfig): string {
+function buildSystemPrompt(config: PRmateConfig): string {
   const convention = getConventionRuleset(config.convention);
   const conventionText = formatConventionForPrompt(convention);
   const strictness =
@@ -67,7 +67,7 @@ export interface ReviewResult {
 
 export async function generateKoreanReview(
   context: PRContext,
-  config: KorReviewConfig
+  config: PRmateConfig
 ): Promise<ReviewResult> {
   const systemPrompt = buildSystemPrompt(config);
   const diffText = formatDiffForReview(context);
@@ -118,7 +118,7 @@ ${diffText}`;
       };
     } catch (err) {
       if (attempt < 2 && (err instanceof Error && (err.name === 'AbortError' || err.message.includes('timeout')))) {
-        console.log(`[KorReview] 타임아웃 발생, 재시도 ${attempt + 1}/2...`);
+        console.log(`[PRmate] 타임아웃 발생, 재시도 ${attempt + 1}/2...`);
         return callWithRetry(attempt + 1);
       }
       throw err;
@@ -130,7 +130,7 @@ ${diffText}`;
   return callWithRetry(1);
 }
 
-export function formatReviewComment(result: ReviewResult, config: KorReviewConfig): string {
+export function formatReviewComment(result: ReviewResult, config: PRmateConfig): string {
   const conventionName = getConventionRuleset(config.convention).name;
   const cacheInfo =
     result.cacheReadTokens > 0
@@ -141,7 +141,7 @@ export function formatReviewComment(result: ReviewResult, config: KorReviewConfi
 
 ---
 <details>
-<summary>🤖 KorReview 메타 정보</summary>
+<summary>🤖 PRmate 메타 정보</summary>
 
 - **컨벤션:** ${conventionName}
 - **리뷰 레벨:** ${config.review_level}

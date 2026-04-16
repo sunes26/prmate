@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 
-const KORREVIEW_HEADER = '<!-- korreview-bot -->';
+const PRMATE_HEADER = '<!-- prmate-bot -->';
 
 export async function postPendingComment(
   octokit: Octokit,
@@ -8,8 +8,8 @@ export async function postPendingComment(
   repo: string,
   pullNumber: number
 ): Promise<number> {
-  const body = `${KORREVIEW_HEADER}
-## 🔍 KorReview 분석 중...
+  const body = `${PRMATE_HEADER}
+## 🔍 PRmate 분석 중...
 
 잠시만 기다려 주세요. AI가 코드를 한국어로 리뷰하고 있습니다.`;
 
@@ -34,7 +34,7 @@ export async function updateComment(
     owner,
     repo,
     comment_id: commentId,
-    body: `${KORREVIEW_HEADER}\n${reviewBody}`,
+    body: `${PRMATE_HEADER}\n${reviewBody}`,
   });
 }
 
@@ -45,12 +45,12 @@ export async function postErrorComment(
   pullNumber: number,
   commentId?: number
 ): Promise<void> {
-  const body = `${KORREVIEW_HEADER}
-## ⚠️ KorReview 오류
+  const body = `${PRMATE_HEADER}
+## ⚠️ PRmate 오류
 
 리뷰 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.
 
-문제가 지속되면 [이슈를 등록](https://github.com/korreview/korreview/issues)해 주세요.`;
+문제가 지속되면 [이슈를 등록](https://github.com/sunes26/prmate/issues)해 주세요.`;
 
   if (commentId) {
     await octokit.issues.updateComment({
@@ -80,6 +80,6 @@ export async function postSkipComment(
     owner,
     repo,
     issue_number: pullNumber,
-    body: `${KORREVIEW_HEADER}\n> ℹ️ KorReview: ${reason}`,
+    body: `${PRMATE_HEADER}\n> ℹ️ PRmate: ${reason}`,
   });
 }

@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { maskSecrets } from '../masking';
-import { KorReviewConfig } from '../config/schema';
+import { PRmateConfig } from '../config/schema';
 import { minimatch } from 'minimatch';
 
 export interface ParsedFile {
@@ -49,7 +49,7 @@ export async function extractPRContext(
   owner: string,
   repo: string,
   pullNumber: number,
-  config: KorReviewConfig
+  config: PRmateConfig
 ): Promise<PRContext> {
   const [prData, filesData] = await Promise.all([
     octokit.pulls.get({ owner, repo, pull_number: pullNumber }),
