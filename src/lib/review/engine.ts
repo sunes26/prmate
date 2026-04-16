@@ -1,4 +1,7 @@
 import { anthropic, MODEL, MAX_TOKENS, TIMEOUT_MS } from '../claude';
+
+// 최대 시도 횟수 (첫 시도 포함) — 타임아웃 발생 시 자동 재시도에 사용
+const MAX_ATTEMPTS = 2;
 import { PRmateConfig } from '../config/schema';
 import { PRContext, formatDiffForReview } from '../github/diff';
 import { getConventionRuleset, formatConventionForPrompt } from './conventions';
@@ -117,8 +120,8 @@ ${diffText}`;
         cacheReadTokens: usage.cache_read_input_tokens ?? 0,
       };
     } catch (err) {
-      if (attempt < 2 && (err instanceof Error && (err.name === 'AbortError' || err.message.includes('timeout')))) {
-        console.log(`[PRmate] 타임아웃 발생, 재시도 ${attempt + 1}/2...`);
+      if (attempt < MAX_ATTEMPTS && (err instanceof Error && (err.name === 'AbortError' || err.message.includes('timeout')))) {
+        console.log(`[PRmate] 타임아웃 발생, 재시도 ${attempt + 1}/${MAX_ATTEMPTS}...`);
         return callWithRetry(attempt + 1);
       }
       throw err;
