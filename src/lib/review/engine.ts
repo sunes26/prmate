@@ -1,10 +1,10 @@
 import { anthropic, MODEL, MAX_TOKENS, TIMEOUT_MS } from '../claude';
-
-// 최대 시도 횟수 (첫 시도 포함) — 타임아웃 발생 시 자동 재시도에 사용
-const MAX_ATTEMPTS = 2;
 import { PRmateConfig } from '../config/schema';
 import { PRContext, formatDiffForReview } from '../github/diff';
 import { getConventionRuleset, formatConventionForPrompt } from './conventions';
+
+// 총 시도 횟수 (초기 1회 + 타임아웃 재시도 1회) — Claude API 호출 안정화용
+const MAX_ATTEMPTS = 2;
 
 function buildSystemPrompt(config: PRmateConfig): string {
   const convention = getConventionRuleset(config.convention);
