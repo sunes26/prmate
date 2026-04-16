@@ -1,5 +1,5 @@
-# KorReview 설정 파일 예시
-# 이 파일을 .korreview.yml로 복사하여 사용하세요.
+# PRmate 설정 파일 예시
+# 이 파일을 .prmate.yml로 복사하여 사용하세요.
 
 # 리뷰 언어 (ko: 한국어, en: 영어)
 language: ko
