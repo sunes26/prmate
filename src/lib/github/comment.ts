@@ -2,7 +2,7 @@ import { Octokit } from '@octokit/rest';
 
 const PRMATE_HEADER = '<!-- prmate-bot -->';
 
-// ─── Inline 코멘트 타입 (Week 4-1) ─────────────────────────────
+// ─── Inline 코멘트 타입 ─────────────────────────────
 export interface InlineComment {
   path: string;
   line: number;
@@ -58,7 +58,7 @@ export async function postErrorComment(
   repo: string,
   pullNumber: number,
   commentId?: number,
-  customBody?: string  // Week 2-2: 에러 타입별 메시지
+  customBody?: string  : 에러 타입별 메시지
 ): Promise<void> {
   const fallback = `## ⚠️ PRmate 오류
 
@@ -101,7 +101,7 @@ export async function postSkipComment(
 }
 
 // ───────────────────────────────────────────────────────────────
-// Inline 코멘트 (Week 4-1: 특정 코드 라인에 직접 코멘트)
+// Inline 코멘트
 // ───────────────────────────────────────────────────────────────
 
 /**
@@ -143,7 +143,7 @@ export async function postInlineReview(
 }
 
 // ───────────────────────────────────────────────────────────────
-// Review State 제출 (Week 4-2: Approve / Request Changes)
+// Review State 제출
 // ───────────────────────────────────────────────────────────────
 
 /**

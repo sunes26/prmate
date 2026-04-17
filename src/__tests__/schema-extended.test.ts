@@ -1,6 +1,6 @@
 import { validateConfig, DEFAULT_CONFIG } from '../lib/config/schema';
 
-describe('PRmateConfig 확장 스키마 (Week 2)', () => {
+describe('PRmateConfig 확장 스키마', () => {
   test('Kill switch: enabled:false 설정', () => {
     const config = validateConfig({ enabled: false });
     expect(config.enabled).toBe(false);

@@ -30,23 +30,23 @@ type DeprecatedConvention = (typeof DEPRECATED_CONVENTIONS)[number];
 
 export type ReviewLevel = 'strict' | 'standard' | 'relaxed';
 export type ModelTier = 'sonnet' | 'haiku' | 'opus';
-export type ReviewMode = 'full' | 'summary' | 'security' | 'pipa'; // Week 4
+export type ReviewMode = 'full' | 'summary' | 'security' | 'pipa'; 
 
-// 파일 타입별 규칙 (Week 2-5)
+// 파일 타입별 규칙
 export interface FileRule {
   pattern: string;              // glob 패턴 (e.g., "src/**/*.ts")
   enabled?: boolean;            // 이 패턴만 스킵
   review_level?: ReviewLevel;   // 이 패턴에 대한 review_level 오버라이드
 }
 
-// 팀 스타일 가이드 (Week 4-9 유사 학습 모드)
+// 팀 스타일 가이드
 export interface LearningConfig {
   enabled: boolean;
   style_guide?: string;         // .prmate/style-guide.md
   examples_dir?: string;        // .prmate/examples/
 }
 
-// 알림 설정 (Week 5 — 스키마만 선언, 구현은 추후)
+// 알림 설정
 export interface SlackNotification {
   webhook_url_secret?: string;
   on_events?: ('review_completed' | 'review_failed')[];
@@ -69,38 +69,38 @@ export interface NotificationConfig {
 
 export interface PRmateConfig {
   // ── 기본 동작 ──────────────────────────
-  enabled: boolean;                  // Week 2-1 Kill switch
+  enabled: boolean;                   Kill switch
   language: Language;
   convention: Convention;
   review_level: ReviewLevel;
 
   // ── 모델 & 성능 ────────────────────────
-  model: ModelTier;                  // Week 2-4
-  dry_run: boolean;                  // Week 2-9
-  mixed_language: boolean;           // Week 2-7 (코드=영어, 설명=한국어)
+  model: ModelTier;                  
+  dry_run: boolean;                  
+  mixed_language: boolean;            (코드=영어, 설명=한국어)
 
   // ── 리뷰 모드 ──────────────────────────
-  mode: ReviewMode;                  // Week 4-3,5,6 (full | summary | security | pipa)
-  pipa_check: boolean;               // Week 4-5 (추가 검사)
-  inline_comments: boolean;          // Week 4-1
-  auto_approve: boolean;             // Week 4-2
+  mode: ReviewMode;                  ,5,6 (full | summary | security | pipa)
+  pipa_check: boolean;                (추가 검사)
+  inline_comments: boolean;          
+  auto_approve: boolean;             
 
   // ── 파일 필터 ──────────────────────────
   exclude_paths: string[];
   max_files_per_pr: number;
-  rules: FileRule[];                 // Week 2-5
+  rules: FileRule[];                 
 
   // ── 커스터마이즈 ──────────────────────
-  convention_file?: string;          // Week 3-7 커스텀 컨벤션 경로
-  custom_prompt?: string;            // Week 2-8
-  learning?: LearningConfig;         // Week 4-9
+  convention_file?: string;           커스텀 컨벤션 경로
+  custom_prompt?: string;            
+  learning?: LearningConfig;         
 
   // ── 알림 ───────────────────────────────
-  notifications?: NotificationConfig; // Week 5
+  notifications?: NotificationConfig; 
 
   // ── PR 라벨 ────────────────────────────
-  skip_labels: string[];             // Week 2-6
-  priority_labels: string[];         // Week 2-6
+  skip_labels: string[];             
+  priority_labels: string[];         
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -257,7 +257,7 @@ export function validateConfig(raw: Record<string, unknown>): PRmateConfig {
     config.max_files_per_pr = Math.min(raw.max_files_per_pr, 50);
   }
 
-  // File rules (Week 2-5)
+  // File rules
   if (Array.isArray(raw.rules)) {
     config.rules = raw.rules
       .filter((r): r is Record<string, unknown> => r !== null && typeof r === 'object')
@@ -274,13 +274,13 @@ export function validateConfig(raw: Record<string, unknown>): PRmateConfig {
       .filter((r) => r.pattern.length > 0);
   }
 
-  // Convention file (Week 3-7)
+  // Convention file
   if (typeof raw.convention_file === 'string') config.convention_file = raw.convention_file;
 
-  // Custom prompt (Week 2-8)
+  // Custom prompt
   if (typeof raw.custom_prompt === 'string') config.custom_prompt = raw.custom_prompt;
 
-  // Learning (Week 4-9)
+  // Learning
   if (raw.learning !== null && typeof raw.learning === 'object') {
     const l = raw.learning as Record<string, unknown>;
     config.learning = {
@@ -298,7 +298,7 @@ export function validateConfig(raw: Record<string, unknown>): PRmateConfig {
     config.priority_labels = raw.priority_labels.filter((l): l is string => typeof l === 'string');
   }
 
-  // Notifications (Week 5) — 단순 pass-through
+  // Notifications — 단순 pass-through
   if (raw.notifications !== null && typeof raw.notifications === 'object') {
     config.notifications = raw.notifications as NotificationConfig;
   }

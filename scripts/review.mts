@@ -94,13 +94,13 @@ async function main() {
   const config = loadConfig();
   console.log(`[PRmate] 컨벤션: ${config.convention}, 레벨: ${config.review_level}, 모드: ${config.mode}, 모델: ${config.model}`);
 
-  // ── Kill switch 체크 (Week 2-1) ──
+  // ── Kill switch 체크 ──
   if (config.enabled === false) {
     console.log('[PRmate] ⏸ enabled: false — 리뷰 전면 중단');
     return;
   }
 
-  // ── 라벨/제목 기반 스킵 (Week 2-6) ──
+  // ── 라벨/제목 기반 스킵 ──
   const skipCheck = await shouldSkipByMeta(octokit, config);
   if (skipCheck.skip) {
     console.log(`[PRmate] ⏭ 스킵: ${skipCheck.reason}`);
@@ -108,7 +108,7 @@ async function main() {
     return;
   }
 
-  // ── Dry-run 모드 안내 (Week 2-9) ──
+  // ── Dry-run 모드 안내 ──
   if (config.dry_run) {
     console.log('[PRmate] 🧪 DRY-RUN 모드 — 실제 코멘트 게시 안 함');
   }
@@ -162,13 +162,13 @@ async function main() {
       await updateComment(octokit, owner, repo, commentId, reviewBody);
     }
 
-    // 5. Inline 코멘트 추가 (Week 4-1)
+    // 5. Inline 코멘트 추가
     if (config.inline_comments && result.inlineComments && result.inlineComments.length > 0) {
       console.log(`[PRmate] Inline 코멘트 ${result.inlineComments.length}개 게시 중...`);
       await postInlineReview(octokit, owner, repo, pullNumber, result.inlineComments);
     }
 
-    // 6. Review Approval/Changes 자동 판정 (Week 4-2)
+    // 6. Review Approval/Changes 자동 판정
     if (config.auto_approve && result.reviewState) {
       console.log(`[PRmate] 리뷰 상태: ${result.reviewState}`);
       await submitReviewState(octokit, owner, repo, pullNumber, result.reviewState);

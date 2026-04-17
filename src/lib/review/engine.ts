@@ -46,7 +46,7 @@ function buildSystemPrompt(config: PRmateConfig): string {
     ? `\n\n## 팀 커스텀 지침\n\n${config.custom_prompt}`
     : '';
 
-  // 팀 학습 데이터 (Week 4-9)
+  // 팀 학습 데이터
   const learningSection = config.learning?.enabled
     ? formatLearningForPrompt(loadTeamLearning(config.learning))
     : '';
@@ -312,7 +312,7 @@ async function callClaude(
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 대형 PR 청킹 (Week 4-4)
+// 대형 PR 청킹
 // ═══════════════════════════════════════════════════════════════
 
 export function shouldChunk(context: PRContext, config: PRmateConfig): boolean {
@@ -382,7 +382,7 @@ function mergeResults(results: ReviewResult[], chunkCount: number): ReviewResult
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Inline 코멘트 파싱 (Week 4-1)
+// Inline 코멘트 파싱
 // ═══════════════════════════════════════════════════════════════
 
 function parseInlineComments(text: string): InlineComment[] {
@@ -406,7 +406,7 @@ function parseInlineComments(text: string): InlineComment[] {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Review State 파싱 (Week 4-2)
+// Review State 파싱
 // ═══════════════════════════════════════════════════════════════
 
 function parseReviewState(text: string): ReviewState | undefined {
@@ -422,7 +422,7 @@ function stripMetadataBlocks(text: string): string {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 리뷰 코멘트 포맷 (Week 2-3 비용 표시 포함)
+// 리뷰 코멘트 포맷
 // ═══════════════════════════════════════════════════════════════
 
 export function formatReviewComment(

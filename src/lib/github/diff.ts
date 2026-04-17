@@ -9,7 +9,7 @@ export interface ParsedFile {
   additions: number;
   deletions: number;
   patch?: string;
-  // Week 2-5: 파일별 오버라이드
+  : 파일별 오버라이드
   overrideLevel?: ReviewLevel;
 }
 
@@ -17,7 +17,7 @@ export interface PRContext {
   title: string;
   body: string;
   author: string;
-  labels: string[];   // Week 2-6
+  labels: string[];   
   files: ParsedFile[];
   baseBranch: string;
   headBranch: string;
@@ -44,7 +44,7 @@ function isExcluded(filename: string, userExcludes: string[]): boolean {
 }
 
 /**
- * Week 2-5: 파일별 규칙 평가
+ * 파일별 규칙 평가
  * rules 배열에서 매칭되는 패턴 찾아 disabled/review_level 오버라이드 반환
  */
 function evaluateFileRules(
@@ -98,7 +98,7 @@ export async function extractPRContext(
     (f) => !isExcluded(f.filename, config.exclude_paths)
   );
 
-  // 2차 필터: 파일별 규칙 (Week 2-5)
+  // 2차 필터: 파일별 규칙
   const stage2 = stage1
     .map((f) => ({
       file: f,
