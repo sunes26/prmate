@@ -23,6 +23,7 @@ import {
   submitReviewState,
 } from '../src/lib/github/comment.js';
 import { classifyError, formatErrorMessage } from '../src/lib/github/errors.js';
+import { sendNotifications } from '../src/lib/notifications.js';
 
 // ─── 환경 변수 검증 ───────────────────────────────────────────
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -174,6 +175,15 @@ async function main() {
     }
 
     console.log('[PRmate] 완료 ✅');
+
+    // 7. 알림 전송 (설정된 경우)
+    await sendNotifications(config.notifications, 'review_completed', {
+      repo: `${owner}/${repo}`,
+      prNumber: pullNumber,
+      prUrl: `https://github.com/${owner}/${repo}/pull/${pullNumber}`,
+      filesReviewed: context.files.length,
+      result,
+    });
   } catch (err) {
     const errorInfo = classifyError(err);
     console.error(`[PRmate] 오류 발생 [${errorInfo.type}]: ${errorInfo.message}`);
@@ -186,6 +196,15 @@ async function main() {
       const userMessage = formatErrorMessage(errorInfo);
       await postErrorComment(octokit, owner, repo, pullNumber, commentId, userMessage);
     }
+
+    // 실패 알림 전송 (설정된 경우)
+    await sendNotifications(config.notifications, 'review_failed', {
+      repo: `${owner}/${repo}`,
+      prNumber: pullNumber,
+      prUrl: `https://github.com/${owner}/${repo}/pull/${pullNumber}`,
+      errorInfo,
+    });
+
     process.exit(1);
   }
 }
