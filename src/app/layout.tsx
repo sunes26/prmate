@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   description:
     "GitHub PR이 열리면 자동으로 한국어로 코드 리뷰 코멘트를 게시합니다. 우아한테크코스, 네이버 Hackday, 토스 Frontend Fundamentals 등 공식 공개 자료 기반 컨벤션 프리셋 내장.",
-  metadataBase: new URL("https://prmate.dev"),
+  metadataBase: new URL("https://prmate.me"),
   openGraph: {
     images: [{ url: "/og-image", width: 1200, height: 630 }],
   },

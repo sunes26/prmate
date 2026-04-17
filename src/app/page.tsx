@@ -11,15 +11,15 @@ export const metadata: Metadata = {
     '우아한테크코스 스타일 가이드', '네이버 Hackday Java', '토스 Frontend Fundamentals',
     'Google Java Style', 'Checkstyle',
   ],
-  authors: [{ name: 'PRmate Team', url: 'https://prmate.dev' }],
-  metadataBase: new URL('https://prmate.dev'),
+  authors: [{ name: 'PRmate Team', url: 'https://prmate.me' }],
+  metadataBase: new URL('https://prmate.me'),
   alternates: { canonical: '/' },
   openGraph: {
     title: 'PRmate — 한국어 AI 코드 리뷰',
     description:
       '우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals 공식 컨벤션 내장. 5분 설치, 베타 기간 무료.',
     type: 'website',
-    url: 'https://prmate.dev',
+    url: 'https://prmate.me',
     siteName: 'PRmate',
     locale: 'ko_KR',
     images: [{ url: '/og-image', width: 1200, height: 630, alt: 'PRmate — 한국어 AI 코드 리뷰' }],
@@ -50,7 +50,7 @@ const jsonLd = {
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Linux, macOS, Windows (via GitHub Actions)',
   description: 'GitHub PR을 한국어로 자동 리뷰하는 AI 도구. 공식 컨벤션 5종 내장.',
-  url: 'https://prmate.dev',
+  url: 'https://prmate.me',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW', description: '베타 기간 무료' },
   softwareVersion: '1.1.0',
 };
