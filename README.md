@@ -3,9 +3,7 @@
 > **GitHub PR이 열리면 자동으로 한국어로 코드 리뷰 코멘트를 게시합니다.**
 > 우아한테크코스, 네이버 Hackday, 토스 Frontend Fundamentals 등 **공식 공개** 컨벤션 프리셋 내장.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-PRmate-blue?logo=github)](https://github.com/marketplace/actions/prmate)
-[![Tests](https://img.shields.io/badge/tests-14%20passed-brightgreen)](#테스트)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-PRmate-blue?logo=github)](https://github.com/marketplace/actions/prmate-ai)
 [![Claude Sonnet 4.6](https://img.shields.io/badge/Claude-Sonnet%204.6-purple)](https://www.anthropic.com)
 
 ---
@@ -52,6 +50,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: prmate/prmate@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -78,7 +77,6 @@ model: sonnet                 # sonnet (권장) | haiku (빠름, 저렴)
 mixed_language: false         # 코드는 영어, 설명은 한국어
 dry_run: false                # 실제 게시 없이 로그만
 
-pipa_check: false             # 개인정보보호법 위반 체크 (Growth 플랜)
 max_files_per_pr: 20          # PR당 최대 리뷰 파일 수
 
 exclude_paths:
@@ -87,23 +85,17 @@ exclude_paths:
   - "*.lock"
   - "*.test.ts"
 
-# 파일 타입별 세부 규칙 (Week 2 신규)
+# 파일 타입별 세부 규칙
 rules:
   - pattern: "src/**/*.ts"
     review_level: strict
   - pattern: "*.spec.ts"
     enabled: false
 
-# 커스텀 프롬프트 주입 (Week 2 신규)
+# 커스텀 프롬프트 주입
 custom_prompt: |
   우리 팀은 함수형 프로그래밍 원칙을 중시합니다.
   가변 상태(mutation) 사용을 강하게 지적해주세요.
-
-# 팀 스타일 가이드 (Week 4 신규)
-learning:
-  enabled: true
-  style_guide: .prmate/style-guide.md
-  examples_dir: .prmate/examples/
 ```
 
 ---
@@ -119,7 +111,7 @@ learning:
 | `custom` | 팀 자체 | `convention_file`로 `.md` 주입 | - |
 
 ### 왜 5개만인가?
-v1.0.0에서는 `kakao`, `sk`, `lg`, `nhn`, `coupang`, `line` 등 11종을 제공했으나
+v1.0.0에서는 `kakao`, `sk`, `lg`, `nhn`, `coupang`, `line` 등 더 많은 종류를 제공했으나
 **공식 공개 문서가 없는 기업들의 규칙은 추정 기반**이었습니다.
 v1.1.0부터는 정직성을 위해 **공개 공식 자료가 있는 4종 + 커스텀 1종**만 제공합니다.
 
@@ -185,20 +177,6 @@ exclude_paths:
 
 ---
 
-## 💰 가격
-
-| 플랜 | 가격 | PR 한도 | 특전 |
-|------|------|---------|------|
-| **Free** | ₩0/월 | 월 30개 | 기본 컨벤션 3개 |
-| **Starter** | ₩9,900/월 | 월 100개 | 전체 컨벤션, 커스텀 프롬프트 |
-| **Team** | ₩29,000/월 | 월 300개 | + Slack/Discord 알림, 학습 모드 |
-| **Growth** | ₩59,000/월 | 무제한 | + PIPA 체크, 보안 모드 |
-| **Enterprise** | 문의 | 무제한 | + SLA, 전담 지원, 커스텀 컨벤션 제작 |
-
-> 💡 **베타 기간 중 모든 기능 무료** — [베타 신청](https://prmate.dev/beta)
-
----
-
 ## ❓ 자주 묻는 질문
 
 <details>
@@ -210,7 +188,7 @@ exclude_paths:
 <details>
 <summary><b>Q: CodeRabbit과 무엇이 다른가요?</b></summary>
 
-CodeRabbit은 `language: ko` 설정이 있지만 실제로는 영어 리뷰가 많이 나온다는 불만이 있습니다. PRmate는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한/카카오/네이버 등 국내 IT사 컨벤션 11종을 기본 제공합니다.
+CodeRabbit은 `language: ko` 설정이 있지만 실제로는 영어 리뷰가 많이 나온다는 불만이 있습니다. PRmate는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals 등 국내 공식 컨벤션 5종을 기본 제공합니다.
 </details>
 
 <details>
@@ -237,32 +215,17 @@ PR 1건당 평균 **$0.01 ~ $0.05** (≈ ₩15~70). Prompt Caching 활용 시 50
 <details>
 <summary><b>Q: 대기업/엔터프라이즈 지원은?</b></summary>
 
-네이버, 카카오, 쿠팡 등 엔터프라이즈 전담 지원 + 커스텀 컨벤션 제작 가능. [문의하기](mailto:contact@prmate.dev)
+전담 지원 및 커스텀 컨벤션 제작 가능. [문의하기](mailto:contact@prmate.me)
 </details>
 
 ---
 
 ## 🔗 링크
 
-- 🌐 **공식 사이트**: [prmate.dev](https://prmate.dev)
-- 📦 **Marketplace**: [github.com/marketplace/actions/prmate](https://github.com/marketplace/actions/prmate)
-- 💬 **Discord**: [discord.gg/prmate](https://discord.gg/prmate)
+- 🌐 **공식 사이트**: [prmate.me](https://prmate.me)
+- 📦 **Marketplace**: [github.com/marketplace/actions/prmate-ai](https://github.com/marketplace/actions/prmate-ai)
 - 🐛 **버그 리포트**: [Issues](https://github.com/prmate/prmate/issues)
 - 💡 **기능 제안**: [Discussions](https://github.com/prmate/prmate/discussions)
-- 📝 **블로그**: [prmate.dev/blog](https://prmate.dev/blog)
-
----
-
-## 🤝 기여
-
-PRmate는 오픈소스입니다. PR 환영합니다!
-[CONTRIBUTING.md](./CONTRIBUTING.md)를 읽어보세요.
-
----
-
-## 📄 라이선스
-
-MIT License — 자유롭게 사용하되 저작권 표시 필수.
 
 ---
 
