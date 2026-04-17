@@ -52,7 +52,7 @@ const jsonLd = {
   description: 'GitHub PR을 한국어로 자동 리뷰하는 AI 도구. 공식 컨벤션 5종 내장.',
   url: 'https://prmate.me',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW', description: '베타 기간 무료' },
-  softwareVersion: '1.1.0',
+  softwareVersion: '1.2.2',
 };
 
 // ─── 데이터 ──────────────────────────────────────────────────────
@@ -69,6 +69,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: prmate/prmate@v1
         with:
           anthropic_api_key: \${{ secrets.ANTHROPIC_API_KEY }}`;
@@ -167,7 +168,7 @@ Consider addressing these issues.`,
     notes: ['영어 그대로', '번역체 한국어 혼합', '맥락 어색', '국내 컨벤션 무지'],
   },
   after: {
-    title: 'PRmate (v1.1.0)',
+    title: 'PRmate (v1.2.2)',
     content: `[위험] 에러 처리 없는 비동기 함수
 
 fetchUser는 네트워크 오류나 HTTP 에러 응답(4xx, 5xx)을 전혀 처리하지 않습니다.
@@ -329,7 +330,7 @@ export default function HomePage() {
               </svg>
             </span>
             <span>PRmate</span>
-            <span className="text-xs font-normal text-gray-500">v1.1.0</span>
+            <span className="text-xs font-normal text-gray-500">v1.2.2</span>
           </a>
           <div className="hidden md:flex items-center gap-6 text-sm">
             {NAV_LINKS.map((link) => (
@@ -359,7 +360,7 @@ export default function HomePage() {
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 bg-blue-900/40 text-blue-300 text-sm px-4 py-1.5 rounded-full mb-6 border border-blue-700/50">
           <span>🚀</span>
-          <span>v1.1.0 — 공식 공개 자료 기반 5종만 제공 · 무료 베타</span>
+          <span>v1.2.2 — 공식 공개 자료 기반 5종만 제공 · 무료 베타</span>
         </div>
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
           PR 리뷰, <span className="text-blue-400">이제 한국어로</span>
@@ -394,7 +395,7 @@ export default function HomePage() {
             🔒 Zero Data Retention
           </span>
           <span className="bg-gray-900 text-gray-400 px-3 py-1 rounded border border-gray-800">
-            📦 v1.1.0 · 53 tests passing
+            📦 v1.2.2 · 53 tests passing
           </span>
           <span className="bg-gray-900 text-gray-400 px-3 py-1 rounded border border-gray-800">
             📖 100% 공식 자료 기반
@@ -463,7 +464,7 @@ export default function HomePage() {
             <span className="text-xs text-gray-400">투명성 수치:</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">5종 공식 컨벤션</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">53 테스트</span>
-            <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">100% 오픈소스</span>
+            <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">GitHub Public 레포</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">
               번들 542 KB
             </span>
@@ -651,7 +652,7 @@ export default function HomePage() {
       <section className="max-w-4xl mx-auto px-6 py-16" id="demo">
         <h2 className="text-3xl font-bold text-center mb-3">실제 PRmate 리뷰 예시</h2>
         <p className="text-gray-400 text-center mb-10">
-          PR #1에서 PRmate가 실제로 생성한 리뷰 (v1.1.0 · 네이버 Hackday 컨벤션)
+          PR #1에서 PRmate가 실제로 생성한 리뷰 (v1.2.2 · 네이버 Hackday 컨벤션)
         </p>
 
         {/* GitHub 코멘트 UI 모사 */}
@@ -810,15 +811,15 @@ export default function HomePage() {
         </div>
         <p className="text-center text-gray-500 text-sm mt-6">
           엔터프라이즈 / 커스텀 컨벤션 제작 ·{' '}
-          <a href="mailto:contact@prmate.dev" className="text-blue-400 hover:underline">
+          <a href="mailto:contact@prmate.me" className="text-blue-400 hover:underline">
             문의하기
           </a>
         </p>
       </section>
 
-      {/* ══════════════════════ 오픈소스 투명성 ══════════════════════ */}
+      {/* ══════════════════════ 투명성 ══════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-3">오픈소스 투명성</h2>
+        <h2 className="text-3xl font-bold text-center mb-3">투명성</h2>
         <p className="text-gray-400 text-center mb-10">모든 코드를 검증할 수 있어야 진짜 신뢰</p>
         <div className="grid md:grid-cols-4 gap-4">
           <a
@@ -843,7 +844,7 @@ export default function HomePage() {
           >
             <div className="text-2xl mb-2">🏷️</div>
             <div className="text-sm text-gray-500 mb-1">릴리스</div>
-            <div className="font-semibold">v1.1.0</div>
+            <div className="font-semibold">v1.2.2</div>
           </a>
         </div>
       </section>
