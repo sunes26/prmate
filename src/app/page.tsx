@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { SiTypescript, SiReact } from 'react-icons/si';
+import { DiJava, DiPython, DiGo, DiRust } from 'react-icons/di';
 import CopyButton from '../components/CopyButton';
 
 export const metadata: Metadata = {
@@ -139,28 +141,35 @@ const USE_CASES = [
     recommend: 'woowa',
     alt: 'naver',
     reason: '우아한테크코스 (Google Java Style 기반 + 4개 커스텀) 또는 Hackday',
-    icon: '☕',
+    icon: <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-500/10 border border-orange-500/20"><DiJava size={26} color="#f89820" /></span>,
   },
   {
     lang: 'TypeScript/React 프론트',
     recommend: 'toss',
     alt: 'default',
     reason: '토스 Frontend Fundamentals 4대 원칙 (가독성·예측가능성·응집도·결합도)',
-    icon: '⚛️',
+    icon: <span className="flex items-center gap-2">
+      <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20"><SiTypescript size={20} color="#3178c6" /></span>
+      <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-cyan-400/10 border border-cyan-400/20"><SiReact size={22} color="#61dafb" /></span>
+    </span>,
   },
   {
     lang: 'Python / Go / Rust',
     recommend: 'default',
     alt: 'custom',
     reason: '클린 코드 범용 원칙. 팀 규칙이 있다면 custom + .md 파일',
-    icon: '🐍',
+    icon: <span className="flex items-center gap-2">
+      <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20"><DiPython size={24} color="#3776ab" /></span>
+      <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-cyan-400/10 border border-cyan-400/20"><DiGo size={26} color="#00add8" /></span>
+      <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20"><DiRust size={22} color="#ce422b" /></span>
+    </span>,
   },
   {
     lang: '사내 규칙 이미 있음',
     recommend: 'custom',
     alt: 'default',
     reason: '.prmate/our-style.md 파일로 팀 전용 규칙 직접 주입',
-    icon: '🏢',
+    icon: <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-700/40 border border-gray-600/30 text-xl">🏢</span>,
   },
 ];
 
@@ -323,13 +332,13 @@ const REVIEW_META = `🤖 PRmate 메타 정보
 const FAQ = [
   { q: '코드가 서버에 저장되나요?', a: '아니요. Zero Data Retention 정책으로 코드는 메모리에서 처리 후 즉시 삭제됩니다. PR diff만 추출하여 분석하며, 전체 레포지토리에 접근하지 않습니다. API 키나 비밀번호는 자동 [REDACTED] 마스킹 처리됩니다.' },
   { q: 'CodeRabbit과 무엇이 다른가요?', a: 'CodeRabbit은 language: ko 설정이 있지만 실제로는 영어 리뷰가 많이 나온다는 불만이 있습니다. PRmate는 처음부터 한국어 리뷰를 위해 설계되었으며, 우아한테크코스 · 네이버 Hackday · 토스 Frontend Fundamentals 등 공식 공개 자료 기반 컨벤션을 내장합니다.' },
-  { q: '왜 카카오·SK·LG·쿠팡·LINE 컨벤션은 없나요?', a: '해당 기업들은 공식으로 공개된 코딩 컨벤션 문서가 없습니다. 외부에 공개되지 않은 사내 규칙을 추정해서 제공하는 것은 정직하지 않다고 판단하여 v1.1.0에서 제거했습니다. 팀 내부 규칙이 있다면 convention: custom + convention_file 옵션으로 팀의 .md 파일을 직접 주입하세요.' },
+  { q: '왜 카카오·SK·LG·쿠팡·LINE 컨벤션은 없나요?', a: '해당 기업들은 공식으로 공개된 코딩 컨벤션 문서가 없습니다. 외부에 공개되지 않은 사내 규칙을 추정해서 제공하는 것은 정직하지 않다고 판단했습니다. 팀 내부 규칙이 있다면 convention: custom + convention_file 옵션으로 팀의 .md 파일을 직접 주입하세요.' },
   { q: '리뷰 비용은 얼마인가요?', a: 'PR 1건당 평균 $0.01 ~ $0.05 (₩15~70). Prompt Caching으로 50~90% 절감. 모든 리뷰 코멘트에 정확한 비용을 USD + KRW로 투명하게 표시합니다.' },
   { q: '어떤 언어를 지원하나요?', a: 'JavaScript, TypeScript, Python, Java, Go, Kotlin, Rust, Ruby, Swift, C# 등 주요 언어 전부 지원. 한국어/영어 혼용 코드베이스도 OK (mixed_language 옵션).' },
   { q: '리뷰가 너무 시끄러우면 어떻게 하나요?', a: 'review_level: relaxed 또는 mode: summary로 변경하면 핵심만 지적합니다. 파일 타입별로 다른 규칙 적용도 가능 (rules 옵션). 특정 PR만 스킵하려면 제목에 [skip review] 포함.' },
   { q: 'AI가 잘못된 지적을 하면요?', a: 'Dry-run 모드로 실제 게시 전 결과 확인 가능. 팀 스타일 가이드 (.prmate/style-guide.md)를 작성하면 팀 컨텍스트를 학습하여 정확도 향상. 프리미엄 학습 모드는 Team 플랜부터.' },
   { q: '설치가 복잡한가요?', a: 'YAML 파일 하나를 복사+붙여넣기, 5분 이내 완료. GitHub Action 방식이라 별도 서버 불필요.' },
-  { q: '베타 기간 중 무료인가요?', a: '네, 베타 기간 중 모든 유료기능 무료입니다. 베타 참여자에게는 정식 출시 후 50% 할인 혜택을 제공할 예정입니다. 피드백은 GitHub Discussions에서 환영합니다.' },
+  { q: '베타 기간 중 무료인가요?', a: '네, 베타 기간 중 모든 유료기능 무료입니다. 베타 기간 중 GitHub 레포지토리에 Star를 누른 계정에는 정식 출시 후 50% 할인 혜택을 제공할 예정입니다. 피드백은 GitHub Discussions에서 환영합니다.' },
   { q: '월 PR 한도를 초과하면 어떻게 되나요?', a: '베타 기간 중에는 한도 관계없이 모든 기능을 자유롭게 이용하실 수 있습니다. 정식 출시 후에는 한도 초과분이 해당 월 동안 대기 상태가 되며, 다음 달 1일 자동 초기화됩니다. 초과가 잦은 경우 상위 플랜 업그레이드 또는 추가 크레딧 구매로 해결 가능합니다.' },
   { q: '리뷰 완료를 어떻게 알 수 있나요?', a: 'Slack 또는 Discord Webhook URL을 .prmate.yml에 등록하면 리뷰 완료/실패 시 팀 채널로 즉시 알림을 받을 수 있습니다. CodeRabbit 등 경쟁 도구가 유료 플랜에서 예약 리포트 방식으로 제공하는 것과 달리, PRmate는 PR 이벤트 즉시 전송합니다.' },
   { q: 'GitHub App으로도 쓸 수 있나요?', a: '현재는 GitHub Action 방식만 지원. GitHub App은 2026년 하반기 출시 예정입니다.' },
@@ -392,7 +401,7 @@ export default function HomePage() {
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 bg-blue-900/40 text-blue-300 text-sm px-4 py-1.5 rounded-full mb-6 border border-blue-700/50">
           <span>🚀</span>
-          <span>공식 공개 자료 기반 5종만 제공 · 무료 베타</span>
+          <span>공식 공개 자료 기반 · 무료 베타</span>
         </div>
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
           PR 리뷰, <span className="text-blue-400">이제 한국어로</span>
@@ -468,13 +477,13 @@ export default function HomePage() {
             <div className="bg-gray-900/60 border border-gray-800 rounded-lg p-5">
               <h3 className="font-semibold mb-3 flex items-center gap-2">
                 <span className="text-green-400">✓</span>
-                <span>v1.1.0에서 한 일</span>
+                <span>우리의 원칙</span>
               </h3>
               <ul className="text-sm text-gray-300 space-y-2">
-                <li>• 11종 → 5종으로 <strong className="text-white">정직성 정리</strong></li>
+                <li>• <strong className="text-white">공식 공개 자료</strong>만 컨벤션 근거로 사용</li>
                 <li>• 모든 컨벤션에 <strong className="text-white">공식 출처 URL 명시</strong></li>
                 <li>• 프롬프트에 출처 링크를 <strong className="text-white">Claude에게도 노출</strong></li>
-                <li>• 제거된 값 사용 시 <strong className="text-white">친절한 안내 메시지</strong></li>
+                <li>• 잘못된 설정 값 사용 시 <strong className="text-white">친절한 안내 메시지</strong></li>
               </ul>
             </div>
 
@@ -611,7 +620,7 @@ export default function HomePage() {
               className="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-blue-700/50 transition-colors"
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-2xl">{icon}</span>
+                <div className="flex items-center">{icon}</div>
                 <h3 className="font-semibold text-lg">{lang}</h3>
               </div>
               <div className="flex items-center gap-2 mb-3">
@@ -872,8 +881,8 @@ export default function HomePage() {
         <div className="max-w-3xl mx-auto bg-blue-900/30 border border-blue-700/50 rounded-xl p-5 mb-10 text-center">
           <p className="text-blue-300 font-semibold mb-1">🚧 2026년 말까지 베타 — 모든 유료기능 무료</p>
           <p className="text-gray-300 text-sm">
-            베타 참여 시 정식 출시 후{' '}
-            <strong className="text-yellow-300">50% 할인 혜택</strong> 제공 예정
+            베타 기간 중 <a href="https://github.com/prmate/prmate" className="text-blue-300 hover:underline">GitHub ★ 누른 계정</a>에{' '}
+            정식 출시 후 <strong className="text-yellow-300">50% 할인 혜택</strong> 제공 예정
           </p>
         </div>
 
@@ -930,7 +939,7 @@ export default function HomePage() {
       <section className="max-w-4xl mx-auto px-6 py-16">
         <h2 className="text-3xl font-bold text-center mb-3">투명성</h2>
         <p className="text-gray-400 text-center mb-10">모든 코드를 검증할 수 있어야 진짜 신뢰</p>
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-3 gap-4">
           <a
             href="https://github.com/prmate/prmate"
             className="bg-gray-900 border border-gray-800 rounded-lg p-5 text-center hover:border-blue-700/50 transition-colors"
@@ -1021,6 +1030,12 @@ export default function HomePage() {
             </a>
             <a href="https://github.com/prmate/prmate/blob/master/CHANGELOG.md" className="hover:text-gray-200">
               Changelog
+            </a>
+            <a href="/privacy" className="hover:text-gray-200">
+              개인정보 처리방침
+            </a>
+            <a href="/terms" className="hover:text-gray-200">
+              이용약관
             </a>
           </div>
         </div>
