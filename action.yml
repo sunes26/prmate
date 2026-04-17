@@ -25,7 +25,7 @@ inputs:
   timeout_ms:
     description: 'Claude API 타임아웃 (밀리초)'
     required: false
-    default: '90000'
+    default: '240000'
 
 outputs:
   review_url:

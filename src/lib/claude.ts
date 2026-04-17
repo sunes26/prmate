@@ -86,14 +86,14 @@ export const MAX_TOKENS = 4096;
 
 /**
  * Claude API 요청 타임아웃 (밀리초).
- * - 기본값 90초: 대형 PR(diff 10파일 이상)도 여유있게 처리 가능
+ * - 기본값 240초(4분): 최악의 경우(대형 PR 청킹) 여유있게 처리 가능
  * - PRMATE_TIMEOUT_MS 환경변수로 오버라이드 가능
  */
 function parseTimeout(): number {
   const raw = process.env.PRMATE_TIMEOUT_MS;
-  if (!raw) return 90_000;
+  if (!raw) return 240_000;
   const parsed = Number(raw);
-  if (!Number.isFinite(parsed) || parsed <= 0) return 90_000;
+  if (!Number.isFinite(parsed) || parsed <= 0) return 240_000;
   return parsed;
 }
 
