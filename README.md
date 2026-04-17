@@ -22,7 +22,7 @@
 
 ---
 
-## 🚀 5분 설치
+## 🚀 4단계로 시작
 
 ### 1단계: API 키 등록
 
@@ -56,7 +56,43 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
-### 3단계: PR 열기 → 자동 리뷰 확인
+### 3단계: 상세 설정 (`.prmate.yml`)
+
+레포 루트에 `.prmate.yml` 파일을 만들어 세부 설정합니다. 없으면 기본값이 사용됩니다.
+
+```yaml
+enabled: true                 # 전체 On/Off (Kill switch)
+
+language: ko                  # ko | en
+convention: naver             # default | woowa | naver | toss | custom
+review_level: standard        # strict | standard | relaxed
+
+model: sonnet                 # sonnet (권장) | haiku (빠름, 저렴)
+mixed_language: false         # 코드는 영어, 설명은 한국어
+dry_run: false                # 실제 게시 없이 로그만
+
+max_files_per_pr: 20          # PR당 최대 리뷰 파일 수
+
+exclude_paths:
+  - "*.md"
+  - "docs/**"
+  - "*.lock"
+  - "*.test.ts"
+
+# 파일 타입별 세부 규칙
+rules:
+  - pattern: "src/**/*.ts"
+    review_level: strict
+  - pattern: "*.spec.ts"
+    enabled: false
+
+# 커스텀 프롬프트 주입
+custom_prompt: |
+  우리 팀은 함수형 프로그래밍 원칙을 중시합니다.
+  가변 상태(mutation) 사용을 강하게 지적해주세요.
+```
+
+### 4단계: PR 열기 → 자동 리뷰 확인 🎉
 
 PR을 열면 2~3분 내 한국어 리뷰 코멘트가 자동으로 게시됩니다.
 

@@ -74,12 +74,35 @@ jobs:
         with:
           anthropic_api_key: \${{ secrets.ANTHROPIC_API_KEY }}`;
 
-const CONFIG_YAML = `enabled: true
-language: ko
-convention: naver       # default | woowa | naver | toss | custom
-review_level: standard  # strict | standard | relaxed
-model: sonnet           # sonnet | haiku | opus
-mode: full              # full | summary | security | pipa`;
+const CONFIG_YAML = `enabled: true                 # 전체 On/Off (Kill switch)
+
+language: ko                  # ko | en
+convention: naver             # default | woowa | naver | toss | custom
+review_level: standard        # strict | standard | relaxed
+
+model: sonnet                 # sonnet (권장) | haiku (빠름, 저렴)
+mixed_language: false         # 코드는 영어, 설명은 한국어
+dry_run: false                # 실제 게시 없이 로그만
+
+max_files_per_pr: 20          # PR당 최대 리뷰 파일 수
+
+exclude_paths:
+  - "*.md"
+  - "docs/**"
+  - "*.lock"
+  - "*.test.ts"
+
+# 파일 타입별 세부 규칙
+rules:
+  - pattern: "src/**/*.ts"
+    review_level: strict
+  - pattern: "*.spec.ts"
+    enabled: false
+
+# 커스텀 프롬프트 주입
+custom_prompt: |
+  우리 팀은 함수형 프로그래밍 원칙을 중시합니다.
+  가변 상태(mutation) 사용을 강하게 지적해주세요.`;
 
 const PAIN_POINTS = [
   { source: 'turtle0204.tistory (2025.09)', quote: '"config 적용 안 되서 자꾸 영어로 말함"' },
@@ -198,8 +221,8 @@ const STEPS = [
   },
   {
     step: '3',
-    title: '(선택) 컨벤션 설정',
-    desc: '.prmate.yml로 팀 컨벤션 커스터마이즈 (없으면 기본값 사용).',
+    title: '상세 설정 (.prmate.yml)',
+    desc: '레포 루트에 .prmate.yml 파일을 만들어 세부 설정합니다. 없으면 기본값이 사용됩니다.',
     code: CONFIG_YAML,
   },
   {
