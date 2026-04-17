@@ -14842,14 +14842,30 @@ async function postPendingComment(octokit, owner2, repo2, pullNumber2) {
   });
   return data.id;
 }
-async function updateComment(octokit, owner2, repo2, commentId, reviewBody) {
+async function updateComment(octokit, owner2, repo2, commentId, reviewBody, headSha) {
+  const shaMark = headSha ? `
+<!-- prmate-reviewed-sha: ${headSha} -->` : "";
   await octokit.issues.updateComment({
     owner: owner2,
     repo: repo2,
     comment_id: commentId,
     body: `${PRMATE_HEADER}
-${reviewBody}`
+${reviewBody}${shaMark}`
   });
+}
+async function findExistingReviewedSha(octokit, owner2, repo2, pullNumber2) {
+  const { data: comments } = await octokit.issues.listComments({
+    owner: owner2,
+    repo: repo2,
+    issue_number: pullNumber2,
+    per_page: 100
+  });
+  for (const comment of comments) {
+    if (!comment.body?.includes(PRMATE_HEADER)) continue;
+    const match2 = comment.body.match(/<!-- prmate-reviewed-sha: ([a-f0-9]+) -->/);
+    if (match2) return match2[1];
+  }
+  return null;
 }
 async function postErrorComment(octokit, owner2, repo2, pullNumber2, commentId, customBody) {
   const fallback = `## \u26A0\uFE0F PRmate \uC624\uB958
@@ -15242,16 +15258,17 @@ function loadConfig() {
 }
 async function shouldSkipByMeta(octokit, config) {
   const { data: pr } = await octokit.pulls.get({ owner, repo, pull_number: pullNumber });
+  const headSha = pr.head.sha;
   const labels = pr.labels.map((l) => (typeof l === "string" ? l : l.name ?? "").toLowerCase());
   const skipLabels = config.skip_labels.map((l) => l.toLowerCase());
   const matched = labels.find((l) => skipLabels.includes(l));
   if (matched) {
-    return { skip: true, reason: `PR \uB77C\uBCA8 '${matched}' \uB9E4\uCE58` };
+    return { skip: true, reason: `PR \uB77C\uBCA8 '${matched}' \uB9E4\uCE58`, headSha };
   }
   if (pr.title.toLowerCase().includes("[skip review]")) {
-    return { skip: true, reason: "PR \uC81C\uBAA9\uC5D0 [skip review] \uD0DC\uADF8" };
+    return { skip: true, reason: "PR \uC81C\uBAA9\uC5D0 [skip review] \uD0DC\uADF8", headSha };
   }
-  return { skip: false };
+  return { skip: false, headSha };
 }
 async function main() {
   console.log(`[PRmate] \uC2DC\uC791: ${GITHUB_REPOSITORY}#${pullNumber}`);
@@ -15266,6 +15283,12 @@ async function main() {
   if (skipCheck.skip) {
     console.log(`[PRmate] \u23ED \uC2A4\uD0B5: ${skipCheck.reason}`);
     await postSkipComment(octokit, owner, repo, pullNumber, skipCheck.reason ?? "\uC124\uC815\uC5D0 \uC758\uD574 \uC2A4\uD0B5");
+    return;
+  }
+  const headSha = skipCheck.headSha;
+  const reviewedSha = await findExistingReviewedSha(octokit, owner, repo, pullNumber);
+  if (reviewedSha === headSha) {
+    console.log(`[PRmate] \u23ED \uC2A4\uD0B5: \uCEE4\uBC0B ${headSha.slice(0, 7)}\uC5D0 \uB300\uD55C \uB9AC\uBDF0\uAC00 \uC774\uBBF8 \uC874\uC7AC\uD568`);
     return;
   }
   if (config.dry_run) {
@@ -15306,7 +15329,7 @@ async function main() {
     }
     const reviewBody = formatReviewComment(result, config);
     if (commentId !== void 0) {
-      await updateComment(octokit, owner, repo, commentId, reviewBody);
+      await updateComment(octokit, owner, repo, commentId, reviewBody, headSha);
     }
     if (config.inline_comments && result.inlineComments && result.inlineComments.length > 0) {
       console.log(`[PRmate] Inline \uCF54\uBA58\uD2B8 ${result.inlineComments.length}\uAC1C \uAC8C\uC2DC \uC911...`);
