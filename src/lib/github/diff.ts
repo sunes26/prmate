@@ -9,7 +9,6 @@ export interface ParsedFile {
   additions: number;
   deletions: number;
   patch?: string;
-  : 파일별 오버라이드
   overrideLevel?: ReviewLevel;
 }
 

@@ -69,38 +69,38 @@ export interface NotificationConfig {
 
 export interface PRmateConfig {
   // ── 기본 동작 ──────────────────────────
-  enabled: boolean;                   Kill switch
+  enabled: boolean;
   language: Language;
   convention: Convention;
   review_level: ReviewLevel;
 
   // ── 모델 & 성능 ────────────────────────
-  model: ModelTier;                  
-  dry_run: boolean;                  
-  mixed_language: boolean;            (코드=영어, 설명=한국어)
+  model: ModelTier;
+  dry_run: boolean;
+  mixed_language: boolean;
 
   // ── 리뷰 모드 ──────────────────────────
-  mode: ReviewMode;                  ,5,6 (full | summary | security | pipa)
-  pipa_check: boolean;                (추가 검사)
-  inline_comments: boolean;          
-  auto_approve: boolean;             
+  mode: ReviewMode;
+  pipa_check: boolean;
+  inline_comments: boolean;
+  auto_approve: boolean;
 
   // ── 파일 필터 ──────────────────────────
   exclude_paths: string[];
   max_files_per_pr: number;
-  rules: FileRule[];                 
+  rules: FileRule[];
 
   // ── 커스터마이즈 ──────────────────────
-  convention_file?: string;           커스텀 컨벤션 경로
-  custom_prompt?: string;            
-  learning?: LearningConfig;         
+  convention_file?: string;
+  custom_prompt?: string;
+  learning?: LearningConfig;
 
   // ── 알림 ───────────────────────────────
-  notifications?: NotificationConfig; 
+  notifications?: NotificationConfig;
 
   // ── PR 라벨 ────────────────────────────
-  skip_labels: string[];             
-  priority_labels: string[];         
+  skip_labels: string[];
+  priority_labels: string[];
 }
 
 // ═══════════════════════════════════════════════════════════════

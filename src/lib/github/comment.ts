@@ -58,7 +58,7 @@ export async function postErrorComment(
   repo: string,
   pullNumber: number,
   commentId?: number,
-  customBody?: string  : 에러 타입별 메시지
+  customBody?: string
 ): Promise<void> {
   const fallback = `## ⚠️ PRmate 오류
 
