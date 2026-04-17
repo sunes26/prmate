@@ -14856,7 +14856,7 @@ async function postErrorComment(octokit, owner2, repo2, pullNumber2, commentId, 
 
 \uB9AC\uBDF0 \uCC98\uB9AC \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.
 
-\uBB38\uC81C\uAC00 \uC9C0\uC18D\uB418\uBA74 [\uC774\uC288\uB97C \uB4F1\uB85D](https://github.com/sunes26/prmate/issues)\uD574 \uC8FC\uC138\uC694.`;
+\uBB38\uC81C\uAC00 \uC9C0\uC18D\uB418\uBA74 [\uC774\uC288\uB97C \uB4F1\uB85D](https://github.com/prmate/prmate/issues)\uD574 \uC8FC\uC138\uC694.`;
   const body = `${PRMATE_HEADER}
 ${customBody ?? fallback}`;
   if (commentId) {
@@ -15010,7 +15010,7 @@ function classifyError(err) {
   return {
     type: "unknown",
     message,
-    remediation: "\uBB38\uC81C\uAC00 \uC9C0\uC18D\uB418\uBA74 \uC774\uC288\uB97C \uB4F1\uB85D\uD574 \uC8FC\uC138\uC694 (https://github.com/sunes26/prmate/issues)."
+    remediation: "\uBB38\uC81C\uAC00 \uC9C0\uC18D\uB418\uBA74 \uC774\uC288\uB97C \uB4F1\uB85D\uD574 \uC8FC\uC138\uC694 (https://github.com/prmate/prmate/issues)."
   };
 }
 function formatErrorMessage(info) {
@@ -15042,9 +15042,173 @@ ${info.remediation ?? "\uC77C\uC2DC\uC801 \uBB38\uC81C\uC77C \uC218 \uC788\uC2B5
 ${info.statusCode ? `- **HTTP \uC0C1\uD0DC:** \`${info.statusCode}\`
 ` : ""}- **\uBA54\uC2DC\uC9C0:** \`${info.message.substring(0, 200)}${info.message.length > 200 ? "..." : ""}\`
 
-\uBB38\uC81C\uAC00 \uC9C0\uC18D\uB418\uBA74 [\uC774\uC288\uB97C \uB4F1\uB85D](https://github.com/sunes26/prmate/issues)\uD574 \uC8FC\uC138\uC694.
+\uBB38\uC81C\uAC00 \uC9C0\uC18D\uB418\uBA74 [\uC774\uC288\uB97C \uB4F1\uB85D](https://github.com/prmate/prmate/issues)\uD574 \uC8FC\uC138\uC694.
 
 </details>`;
+}
+
+// src/lib/notifications.ts
+async function sendSlackNotification(webhookUrl, event, ctx, slackConfig) {
+  const isError = event === "review_failed";
+  const emoji = isError ? "\u{1F6A8}" : "\u2705";
+  const title = isError ? `${emoji} PRmate \uB9AC\uBDF0 \uC2E4\uD328` : `${emoji} PRmate \uB9AC\uBDF0 \uC644\uB8CC`;
+  const mention = slackConfig.mention ? `<${slackConfig.mention}> ` : "";
+  const blocks = [
+    {
+      type: "header",
+      text: { type: "plain_text", text: title }
+    },
+    {
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: `*\uC800\uC7A5\uC18C*
+${ctx.repo}` },
+        { type: "mrkdwn", text: `*PR*
+<${ctx.prUrl}|#${ctx.prNumber}>` }
+      ]
+    }
+  ];
+  if (!isError && ctx.filesReviewed !== void 0 && ctx.result) {
+    blocks.push({
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: `*\uBD84\uC11D \uD30C\uC77C*
+${ctx.filesReviewed}\uAC1C` },
+        {
+          type: "mrkdwn",
+          text: `*\uBE44\uC6A9*
+$${ctx.result.costUSD.toFixed(4)} (\u20A9${ctx.result.costKRW.toLocaleString("ko-KR")})`
+        }
+      ]
+    });
+  }
+  if (isError && ctx.errorInfo) {
+    blocks.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*\uC624\uB958 \uC720\uD615:* \`${ctx.errorInfo.type}\`
+${ctx.errorInfo.message}`
+      }
+    });
+  }
+  blocks.push({
+    type: "actions",
+    elements: [
+      {
+        type: "button",
+        text: { type: "plain_text", text: "PR \uBCF4\uAE30 \u2192", emoji: true },
+        url: ctx.prUrl,
+        style: isError ? "danger" : "primary"
+      }
+    ]
+  });
+  const body = {
+    text: `${mention}${title} \u2014 ${ctx.repo} #${ctx.prNumber}`,
+    blocks
+  };
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Slack \uC751\uB2F5 \uC624\uB958 ${response.status}: ${text}`);
+  }
+}
+async function sendDiscordNotification(webhookUrl, event, ctx) {
+  const isError = event === "review_failed";
+  const color = isError ? 15158332 : 4905612;
+  const title = isError ? "\u{1F6A8} PRmate \uB9AC\uBDF0 \uC2E4\uD328" : "\u2705 PRmate \uB9AC\uBDF0 \uC644\uB8CC";
+  const fields = [
+    { name: "\uC800\uC7A5\uC18C", value: ctx.repo, inline: true },
+    { name: "PR", value: `[#${ctx.prNumber}](${ctx.prUrl})`, inline: true }
+  ];
+  if (!isError && ctx.filesReviewed !== void 0) {
+    fields.push({ name: "\uBD84\uC11D \uD30C\uC77C", value: `${ctx.filesReviewed}\uAC1C`, inline: true });
+  }
+  if (!isError && ctx.result) {
+    fields.push({
+      name: "\uBE44\uC6A9",
+      value: `$${ctx.result.costUSD.toFixed(4)} (\u20A9${ctx.result.costKRW.toLocaleString("ko-KR")})`,
+      inline: true
+    });
+  }
+  if (isError && ctx.errorInfo) {
+    fields.push({
+      name: "\uC624\uB958 \uC720\uD615",
+      value: `\`${ctx.errorInfo.type}\``,
+      inline: true
+    });
+    fields.push({
+      name: "\uC624\uB958 \uB0B4\uC6A9",
+      value: ctx.errorInfo.message,
+      inline: false
+    });
+  }
+  const embed = {
+    title,
+    url: ctx.prUrl,
+    color,
+    fields,
+    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+    footer: { text: "PRmate \u2014 \uD55C\uAD6D\uC5B4 AI \uCF54\uB4DC \uB9AC\uBDF0" }
+  };
+  const body = {
+    username: "PRmate",
+    embeds: [embed]
+  };
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Discord \uC751\uB2F5 \uC624\uB958 ${response.status}: ${text}`);
+  }
+}
+function resolveWebhookUrl(secretName) {
+  if (!secretName) return void 0;
+  return process.env[secretName];
+}
+async function sendNotifications(config, event, ctx) {
+  if (!config) return;
+  const tasks = [];
+  if (config.slack?.on_events?.includes(event)) {
+    const url = resolveWebhookUrl(config.slack.webhook_url_secret);
+    if (url) {
+      tasks.push(
+        sendSlackNotification(url, event, ctx, config.slack).catch((err) => {
+          console.warn(
+            `[PRmate] \u26A0 Slack \uC54C\uB9BC \uC804\uC1A1 \uC2E4\uD328: ${err instanceof Error ? err.message : String(err)}`
+          );
+        })
+      );
+    } else {
+      console.warn(
+        `[PRmate] \u26A0 Slack webhook URL\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC74C (secret \uC774\uB984: '${config.slack.webhook_url_secret}')`
+      );
+    }
+  }
+  if (config.discord?.on_events?.includes(event)) {
+    const url = resolveWebhookUrl(config.discord.webhook_url_secret);
+    if (url) {
+      tasks.push(
+        sendDiscordNotification(url, event, ctx).catch((err) => {
+          console.warn(
+            `[PRmate] \u26A0 Discord \uC54C\uB9BC \uC804\uC1A1 \uC2E4\uD328: ${err instanceof Error ? err.message : String(err)}`
+          );
+        })
+      );
+    } else {
+      console.warn(
+        `[PRmate] \u26A0 Discord webhook URL\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC74C (secret \uC774\uB984: '${config.discord.webhook_url_secret}')`
+      );
+    }
+  }
+  await Promise.all(tasks);
 }
 
 // scripts/review.mts
@@ -15153,6 +15317,13 @@ async function main() {
       await submitReviewState(octokit, owner, repo, pullNumber, result.reviewState);
     }
     console.log("[PRmate] \uC644\uB8CC \u2705");
+    await sendNotifications(config.notifications, "review_completed", {
+      repo: `${owner}/${repo}`,
+      prNumber: pullNumber,
+      prUrl: `https://github.com/${owner}/${repo}/pull/${pullNumber}`,
+      filesReviewed: context.files.length,
+      result
+    });
   } catch (err) {
     const errorInfo = classifyError(err);
     console.error(`[PRmate] \uC624\uB958 \uBC1C\uC0DD [${errorInfo.type}]: ${errorInfo.message}`);
@@ -15163,6 +15334,12 @@ async function main() {
       const userMessage = formatErrorMessage(errorInfo);
       await postErrorComment(octokit, owner, repo, pullNumber, commentId, userMessage);
     }
+    await sendNotifications(config.notifications, "review_failed", {
+      repo: `${owner}/${repo}`,
+      prNumber: pullNumber,
+      prUrl: `https://github.com/${owner}/${repo}/pull/${pullNumber}`,
+      errorInfo
+    });
     process.exit(1);
   }
 }
