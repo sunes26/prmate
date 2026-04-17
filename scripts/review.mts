@@ -21,6 +21,7 @@ import {
   postSkipComment,
   postInlineReview,
   submitReviewState,
+  findExistingReviewedSha,
 } from '../src/lib/github/comment.js';
 import { classifyError, formatErrorMessage } from '../src/lib/github/errors.js';
 import { sendNotifications } from '../src/lib/notifications.js';
@@ -66,23 +67,24 @@ function loadConfig(): PRmateConfig {
 async function shouldSkipByMeta(
   octokit: Octokit,
   config: PRmateConfig
-): Promise<{ skip: boolean; reason?: string }> {
+): Promise<{ skip: boolean; reason?: string; headSha: string }> {
   const { data: pr } = await octokit.pulls.get({ owner, repo, pull_number: pullNumber });
+  const headSha = pr.head.sha;
 
   // PR 라벨 체크
   const labels = pr.labels.map((l) => (typeof l === 'string' ? l : l.name ?? '').toLowerCase());
   const skipLabels = config.skip_labels.map((l) => l.toLowerCase());
   const matched = labels.find((l) => skipLabels.includes(l));
   if (matched) {
-    return { skip: true, reason: `PR 라벨 '${matched}' 매치` };
+    return { skip: true, reason: `PR 라벨 '${matched}' 매치`, headSha };
   }
 
   // PR 제목에 [skip review]
   if (pr.title.toLowerCase().includes('[skip review]')) {
-    return { skip: true, reason: 'PR 제목에 [skip review] 태그' };
+    return { skip: true, reason: 'PR 제목에 [skip review] 태그', headSha };
   }
 
-  return { skip: false };
+  return { skip: false, headSha };
 }
 
 // ─── 메인 함수 ────────────────────────────────────────────────
@@ -105,6 +107,15 @@ async function main() {
   if (skipCheck.skip) {
     console.log(`[PRmate] ⏭ 스킵: ${skipCheck.reason}`);
     await postSkipComment(octokit, owner, repo, pullNumber, skipCheck.reason ?? '설정에 의해 스킵');
+    return;
+  }
+
+  const headSha = skipCheck.headSha;
+
+  // ── SHA 기반 중복 리뷰 방지 ──
+  const reviewedSha = await findExistingReviewedSha(octokit, owner, repo, pullNumber);
+  if (reviewedSha === headSha) {
+    console.log(`[PRmate] ⏭ 스킵: 커밋 ${headSha.slice(0, 7)}에 대한 리뷰가 이미 존재함`);
     return;
   }
 
@@ -159,7 +170,7 @@ async function main() {
     // 4. 리뷰 코멘트 업데이트
     const reviewBody = formatReviewComment(result, config);
     if (commentId !== undefined) {
-      await updateComment(octokit, owner, repo, commentId, reviewBody);
+      await updateComment(octokit, owner, repo, commentId, reviewBody, headSha);
     }
 
     // 5. Inline 코멘트 추가

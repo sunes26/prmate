@@ -42,14 +42,38 @@ export async function updateComment(
   owner: string,
   repo: string,
   commentId: number,
-  reviewBody: string
+  reviewBody: string,
+  headSha?: string
 ): Promise<void> {
+  const shaMark = headSha ? `\n<!-- prmate-reviewed-sha: ${headSha} -->` : '';
   await octokit.issues.updateComment({
     owner,
     repo,
     comment_id: commentId,
-    body: `${PRMATE_HEADER}\n${reviewBody}`,
+    body: `${PRMATE_HEADER}\n${reviewBody}${shaMark}`,
   });
+}
+
+export async function findExistingReviewedSha(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  pullNumber: number
+): Promise<string | null> {
+  const { data: comments } = await octokit.issues.listComments({
+    owner,
+    repo,
+    issue_number: pullNumber,
+    per_page: 100,
+  });
+
+  for (const comment of comments) {
+    if (!comment.body?.includes(PRMATE_HEADER)) continue;
+    const match = comment.body.match(/<!-- prmate-reviewed-sha: ([a-f0-9]+) -->/);
+    if (match) return match[1];
+  }
+
+  return null;
 }
 
 export async function postErrorComment(
