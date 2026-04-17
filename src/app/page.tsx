@@ -90,7 +90,7 @@ const COMPARISON = [
   { feature: '한국어 리뷰 품질', prmate: '공식 지원 (번역체 없음)', competitor: '설정 옵션 (실전 영어 많음)', winner: 'prmate' },
   { feature: '한국 IT사 공식 컨벤션', prmate: '우아한/네이버/토스 3종', competitor: '없음', winner: 'prmate' },
   { feature: '비용 투명성', prmate: 'PR마다 USD/KRW 표시', competitor: '구독제', winner: 'prmate' },
-  { feature: '오픈소스', prmate: 'MIT 라이선스', competitor: 'Closed source', winner: 'prmate' },
+  { feature: '오픈소스', prmate: '오픈소스', competitor: 'Closed source', winner: 'prmate' },
   { feature: '가격', prmate: '베타 유료기능 무료 / Starter ₩9,900', competitor: '$15/월 ~', winner: 'prmate' },
   { feature: '커스텀 컨벤션 파일', prmate: '.md 주입 기본 지원', competitor: '제한적', winner: 'prmate' },
   { feature: '설치 난이도', prmate: 'YAML 한 줄 (5분)', competitor: '원클릭 (GitHub App)', winner: 'competitor' },
@@ -461,7 +461,6 @@ export default function HomePage() {
             <span className="text-xs text-gray-400">투명성 수치:</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">5종 공식 컨벤션</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">53 테스트</span>
-            <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">MIT 라이선스</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">100% 오픈소스</span>
             <span className="text-xs px-2 py-1 bg-gray-900 rounded border border-gray-800">
               번들 542 KB
@@ -844,14 +843,6 @@ export default function HomePage() {
             <div className="text-sm text-gray-500 mb-1">릴리스</div>
             <div className="font-semibold">v1.1.0</div>
           </a>
-          <a
-            href="https://github.com/prmate/prmate/blob/master/LICENSE"
-            className="bg-gray-900 border border-gray-800 rounded-lg p-5 text-center hover:border-blue-700/50 transition-colors"
-          >
-            <div className="text-2xl mb-2">📜</div>
-            <div className="text-sm text-gray-500 mb-1">라이선스</div>
-            <div className="font-semibold">MIT</div>
-          </a>
         </div>
       </section>
 
@@ -918,9 +909,6 @@ export default function HomePage() {
             </a>
             <a href="https://github.com/prmate/prmate/blob/master/CHANGELOG.md" className="hover:text-gray-200">
               Changelog
-            </a>
-            <a href="https://github.com/prmate/prmate/blob/master/LICENSE" className="hover:text-gray-200">
-              라이선스
             </a>
           </div>
         </div>
